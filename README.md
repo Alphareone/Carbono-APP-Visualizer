@@ -35,16 +35,17 @@ Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y 
 
 ---
 
-##  Arquitectura del Repositorio
+## 👥 Equipo de Ingeniería y Diseño
 
-├── css/
-│   └── style.css       # Hoja de estilos cuántica, variables de tema y responsive grid.
-├── js/
-│   └── script.js      # Motor lógico, orquestador de gráficos y pipelines de exportación.
-├── index.html         # Estructura e interfaz semántica de la suite analítica.
-└── README.md          # Documentación técnica del proyecto.
+Este ecosistema analítico avanzado ha sido conceptualizado, diseñado y desarrollado de manera integral por el equipo adjunto de **A.B.C.A - Link**, impulsando la transformación de arquitecturas de datos tradicionales hacia entornos de simulación predictivos, escalables e innovadores.
 
 ---
+## 📂 Arquitectura del Repositorio
 
-## 
-Diseñado y Desarrollado por lod miembros del equipo adjunto de ABCALINK
+```text
+├── css/
+│   └── style.css       # Hoja de estilos cuántica, variables de tema y responsive grid
+├── js/
+│   └── script.js      # Motor lógico, orquestador de gráficos y pipelines de exportación
+├── index.html         # Estructura e interfaz semántica de la suite analítica
+└── README.md          # Documentación técnica del proyecto
