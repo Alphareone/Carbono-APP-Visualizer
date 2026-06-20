@@ -1,51 +1,49 @@
-#  EcoTrack Quantum OS (CarbonoApp) - Advanced Analytics Suite
+# Carbono-App-Visualizer - Suite Analítica Ambiental
 
-##  Origen del Proyecto: De "CarbonoApp" a la Suite Multidimensional
+## 📊 Origen del Proyecto: Evolución a la Suite Multidimensional
 
-**EcoTrack Quantum OS** nació de una necesidad de evolución técnica y estratégica. El proyecto original, **CarbonoApp**, fue concebido inicialmente como una herramienta lineal y estática para registrar la huella de carbono industrial de manera centralizada. 
+**Carbono-App-Visualizer** nació de una necesidad de evolución técnica, estratégica y legal. El proyecto original, *CarbonoApp*, fue concebido inicialmente como una herramienta lineal y estática para registrar la huella de carbono industrial de manera centralizada. 
 
 Sin embargo, en entornos operativos reales, las variables ambientales no actúan de forma aislada. La necesidad de monitorear simultáneamente la contaminación acústica y los flujos fotónicos (luminosidad) evidenció las limitaciones de una arquitectura rígida. 
 
-Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y estructural de CarbonoApp**, transformándolo en una simulación de consola analítica de carácter predictivo e innovador. La idea central fue simular una suite de instrumentación avanzada donde cada flujo de datos no solo se renderizara, sino que fuera sometido a un método de análisis estadístico y matemático específico en tiempo real, manteniendo un aislamiento absoluto de la memoria por cada canal.
+Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y estructural del software**, transformándolo en una simulación de consola analítica de carácter predictivo e innovador bajo el nombre de **Carbono-App-Visualizer**. La idea central es simular una suite de instrumentación avanzada donde cada flujo de datos no solo se renderiza, sino que es sometido a métodos de análisis estadístico y matemático específicos en tiempo real, manteniendo un aislamiento absoluto de la memoria por cada canal ambiental.
 
 ---
 
-##  Características Innovadoras y Diferenciales
+## 🚀 Características Innovadoras y Diferenciales
 
-*   **Aislamiento de Datos Cuánticos (`dataPool`):** A diferencia de arquitecturas compartidas, cada laboratorio (Carbono, Lumínica, Acústica) posee su propio hilo de memoria segregado. Al alternar de pestaña, la base de datos local purga y reconstruye el búfer en caliente.
-*   **Mapeo Gráfico Pentagonal Asíncrono:** El sistema procesa e interactúa con 5 gráficos simultáneos mediante *Chart.js*, optimizados para evitar fugas de memoria mediante la destrucción y reconstrucción controlada de instancias (`chart.destroy()`).
-*   **Análisis Matemático Pertinente (Canal A2 Mutante):** El gráfico **A2** rompe el paradigma de la visualización genérica adaptando su tipo de gráfico al método analítico que la variable requiere:
-    *   **CO₂ $\rightarrow$ Curva ROC (Receiver Operating Characteristic):** Evalúa la sensibilidad y especificidad de las alertas frente a falsos positivos en la detección de gas.
-    *   **Luxes $\rightarrow$ Histograma Frecuencial Discreto:** Mide la densidad fotónica y homogeneidad de la luz captada sin espacio intermedio entre barras.
-    *   **Decibelios $\rightarrow$ Transformada Rápida de Fourier (FFT / PSD):** Un gráfico de dispersión conectada (*Scatter-Line*) que desglosa la energía espectral del ruido transitorio en Hercios ($Hz$).
-*   **Interfaz Adaptativa y Osciloscopio Reactivo (Canal A1):** El osciloscopio de flujo continuo (`chart-A1`) cuenta con una malla de diseño biomédico (`.ecg-bg`) y un fondo traslúcido reactivo que muta de opacidad e invierte los ejes de color de manera síncrona al activarse el Modo Claro u Oscuro.
-*   **Ingesta Forzada de Vectores (Auditoría Manual):** Módulo especializado para inyectar datos de manera estocástica a través de un panel de simulación en ráfaga, reflejado inmediatamente en un gráfico de Radar independiente y reportes exportables.
-*   **Exportación Automatizada Corporativa:** Generación instantánea de reportes en **Excel (XLSX)** mediante *SheetJS* y **PDFs Dinámicos** con cabeceras estilizadas e identificadas con el color hexadecimal del canal activo mediante *jsPDF Autotable*.
-*   **Acceso Autenticado Simulado (Google Identity UI):** Pantalla de entrada limpia que emula las directrices de diseño y flujos visuales de Google Identity para entornos corporativos seguros.
+* **Aislamiento de Datos Integrado (`dataPool`):** A diferencia de arquitecturas compartidas, cada dimensión ambiental (Carbono, Lumínica, Ruido) posee su propio búfer de memoria segregado en la aplicación. Al alternar de pestaña, el núcleo destruye y regenera los flujos en caliente para un rendimiento óptimo.
+* **Matriz Multi-Gráfico Adaptativa (Estructura 2x2):** El sistema procesa e interactúa de manera simultánea con una matriz elástica de 4 cuadrantes de gráficos dinámicos optimizados mediante *Chart.js*. El sistema evita fugas de memoria mediante la destrucción y reconstrucción controlada de instancias (`chart.destroy()`) en cada conmutación.
+* **Slot de Expansión Predictiva Integrado:** El cuarto cuadrante de la matriz está diseñado estructuralmente como un módulo de expansión analítica listo para acoplar algoritmos de proyección estocástica y simulaciones avanzadas de mitigación.
+* **Simulación Inmersiva y Canales Dinámicos:** Al cambiar de canal (CO₂, Lumínica o Ruido), las tipologías de los gráficos de la matriz se adaptan automáticamente para representar fielmente el fenómeno físico medido (líneas temporales, histogramas, análisis estocásticos, áreas polares y radares cardinales).
+* **Ingesta y Sincronización de Lotes (Nodos de Carga):** Módulo dedicado para emular la importación masiva de datasets históricos en formato CSV, acoplando instantáneamente los vectores de datos de campo simulados directamente al Core de procesamiento del visualizador.
+* **Pipelines de Exportación Corporativa:** Generación e instanciación en tiempo real de reportes de auditoría en hojas de cálculo **Excel (XLSX)** segmentadas por pestañas mediante *SheetJS* y documentos **PDF Consolidados** con tablas dinámicas estructuradas a través de *jsPDF Autotable*.
+* **Arquitectura Fluida Dual (Modo Claro / Oscuro):** Interfaz adaptativa avanzada con inversión de ejes cromáticos de manera síncrona en gráficos, sidebar y consolas operativas para garantizar la legibilidad en entornos industriales o de laboratorio.
 
 ---
 
-##  Stack Tecnológico
+## 🛠️ Stack Tecnológico
 
-*   **Core:** HTML5 / CSS3 Avanzado (Variables nativas CSS y selectores adaptativos).
-*   **Logic Core:** Vanilla JavaScript ES6+ (Programación asíncrona y modular).
-*   **Graphics Engine:** Chart.js v4.x (Renderizado en canvas de alto rendimiento).
-*   **Icons:** Lucide Icons (Librería vectorial de trazo limpio).
-*   **Export Engines:** SheetJS (xlsx.full.min.js) & jsPDF / jsPDF-AutoTable.
+* **Core:** HTML5 / CSS3 Avanzado (Variables nativas CSS, Grid cuántica responsiva y selectores adaptativos).
+* **Logic Core:** Vanilla JavaScript ES6+ (Programación asíncrona, Random Walk inercial para telemetría y aislamiento de buffers).
+* **Graphics Engine:** Chart.js v4.x (Renderizado en canvas de alta tasa de refresco).
+* **Icons:** Lucide Icons (Librería vectorial moderna de trazo limpio).
+* **Export Engines:** SheetJS (xlsx.full.min.js) & jsPDF / jsPDF-AutoTable.
 
 ---
 
 ## 👥 Equipo de Ingeniería y Diseño
 
-Este ecosistema analítico avanzado ha sido conceptualizado, diseñado y desarrollado de manera integral por el equipo adjunto de **A.B.C.A - Link**, impulsando la transformación de arquitecturas de datos tradicionales hacia entornos de simulación predictivos, escalables e innovadores.
+Este ecosistema analítico avanzado ha sido conceptualizado, diseñado y desarrollado de manera integral por el equipo de **A.B.C.A - Link**, impulsando la transformación de arquitecturas de datos tradicionales hacia entornos de simulación predictivos, escalables e innovadores.
 
 ---
+
 ## 📂 Arquitectura del Repositorio
 
 ```text
 ├── css/
-│   └── style.css       # Hoja de estilos cuántica, variables de tema y responsive grid
+│   └── style.css      # Hoja de estilos de la marca, variables de tema dual y responsive grid
 ├── js/
-│   └── script.js      # Motor lógico, orquestador de gráficos y pipelines de exportación
-├── index.html         # Estructura e interfaz semántica de la suite analítica
+│   └── script.js      # Controlador lógico, orquestador de matriz 2x2 y pipelines de exportación
+├── index.html         # Interfaz estructural renovada y contenedores de la suite analítica
 └── README.md          # Documentación técnica del proyecto
