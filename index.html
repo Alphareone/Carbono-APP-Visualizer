@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack Quantum OS - Advanced Analytics Suite</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="google-login-box">
+            <div class="google-logo">
+                <svg viewBox="0 0 24 24" width="48" height="48">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+            </div>
+            <h2>Iniciar sesión</h2>
+            <p class="google-subtitle">Ir a EcoTrack Quantum OS</p>
+            <div class="google-account-selector">
+                <div class="avatar-placeholder"><i data-lucide="user" style="width:18px;height:18px;color:#5f6368;"></i></div>
+                <div class="account-info">
+                    <span class="email-name">quantum.admin@ecotrack.org</span>
+                    <span class="email-status">Sesión cerrada</span>
+                </div>
+            </div>
+            <p class="google-disclaimer">Para continuar, Google compartirá tu nombre, correo y foto de perfil con EcoTrack.</p>
+            <div class="google-footer-actions">
+                <button class="btn-google-secondary" onclick="alert('Módulo protegido por políticas corporativas.')">Crear cuenta</button>
+                <button class="btn-google-primary" id="btn-google-login" onclick="simularLoginGoogle()">Siguiente</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-interface" style="display: none;">
+        
+        <aside>
+            <div class="aside-top-flow">
+                <div class="brand"><i data-lucide="activity"></i> ECO-QUANTUM</div>
+                <div id="user-profile-box">
+                    <img id="user-avatar" src="" alt="Avatar">
+                    <div class="user-text-meta">
+                        <p id="user-name"></p>
+                        <p style="font-size: 0.65rem; color: var(--text-muted);">Operador Máster</p>
+                    </div>
+                </div>
+                <div class="menu-container">
+                    <a href="#dashboard" id="btn-dashboard" class="menu-item active" onclick="switchView('dashboard')">
+                        <i data-lucide="line-chart"></i> Laboratorio Central
+                    </a>
+                    <a href="#nodos" id="btn-nodos" class="menu-item" onclick="switchView('nodos')">
+                        <i data-lucide="terminal"></i> Ingesta Manual
+                    </a>
+                    <a href="#settings" id="btn-settings" class="menu-item" onclick="switchView('settings')">
+                        <i data-lucide="sliders"></i> Parámetros
+                    </a>
+                </div>
+            </div>
+            <div class="theme-switch-box">
+                <button class="toggle-btn" onclick="toggleTheme()">
+                    <i id="theme-icon" data-lucide="sun"></i> <span id="theme-text">Modo Claro</span>
+                </button>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <div>
+                    <h1 id="page-title">Estación Analítica Predictiva</h1>
+                    <p class="subtitle">Monitoreo multidimensional integrado de huellas ambientales con almacenamiento y reportes independientes.</p>
+                </div>
+                <div class="status-badge"><div class="pulse"></div> OPERATIVO • 5 GRÁFICOS ASÍNCRONOS (<span id="kpi-registros">0</span> ticks)</div>
+            </header>
+            
+            <section id="view-dashboard">
+                <div class="kpi-grid">
+                    <div class="card card-interactive" onclick="switchTableTab('carbono')">
+                        <div class="card-header">Frecuencia CO2 <i data-lucide="activity" style="color:var(--emerald)"></i></div>
+                        <div class="card-value" id="kpi-carbono" style="color: var(--emerald);">0.000 t</div>
+                    </div>
+                    <div class="card card-interactive" onclick="switchTableTab('luminica')">
+                        <div class="card-header">Intensidad Lumínica <i data-lucide="activity" style="color:var(--amber)"></i></div>
+                        <div class="card-value" id="kpi-luminica" style="color: var(--amber);">0 lx</div>
+                    </div>
+                    <div class="card card-interactive" onclick="switchTableTab('ruido')">
+                        <div class="card-header">Presión Acústica <i data-lucide="activity" style="color:var(--purple-neon)"></i></div>
+                        <div class="card-value" id="kpi-ruido" style="color: var(--purple-neon);">0 dB</div>
+                    </div>
+                </div>
+
+                <div class="logs-container">
+                    <div class="logs-header flex-mobile-column">
+                        <div class="table-tabs">
+                            <button id="tab-carbono" class="tab-btn active" onclick="switchTableTab('carbono')">Canal Carbono</button>
+                            <button id="tab-luminica" class="tab-btn" onclick="switchTableTab('luminica')">Canal Lumínica</button>
+                            <button id="tab-ruido" class="tab-btn" onclick="switchTableTab('ruido')">Canal Acústica (dB)</button>
+                        </div>
+                        <div class="download-actions">
+                            <button id="btn-export-excel" onclick="exportActiveTabToExcel()" class="btn-download"><i data-lucide="file-spreadsheet"></i> Excel</button>
+                            <button id="btn-export-pdf" onclick="exportActiveTabToPDF()" class="btn-download"><i data-lucide="file-text"></i> PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="triple-graph-grid">
+                        <div class="chart-view-card ecg-bg large-column">
+                            <h3 class="chart-title" id="lbl-chart-a1"><span class="pulse"></span> CANAL A1: MONITOR DE FLUJO CONTINUO</h3>
+                            <div class="chart-container"><canvas id="chart-A1"></canvas></div>
+                        </div>
+                        <div class="chart-view-card">
+                            <h3 class="chart-title" id="lbl-chart-a2"><i data-lucide="git-commit"></i> CANAL A2: ANALÍTICA INTERNA DE MATRIZ</h3>
+                            <div class="chart-container"><canvas id="chart-A2"></canvas></div>
+                        </div>
+                        
+                        <div class="chart-view-card">
+                            <h3 class="chart-title" id="lbl-chart-a4"><i data-lucide="trending-up"></i> CANAL A4: PROMEDIO INTEGRADO DIARIO</h3>
+                            <div class="chart-container"><canvas id="chart-A4"></canvas></div>
+                        </div>
+                        <div class="chart-view-card">
+                            <h3 class="chart-title" id="lbl-chart-a5"><i data-lucide="bar-chart-3"></i> CANAL A5: DISTRIBUCIÓN VECTORIAL POR NODOS</h3>
+                            <div class="chart-container"><canvas id="chart-A5"></canvas></div>
+                        </div>
+
+                        <div class="chart-view-card full-width-row">
+                            <h3 class="chart-title" id="lbl-chart-a3"><i data-lucide="grid"></i> CANAL A3: GEOMETRÍA COMPORTAMENTAL</h3>
+                            <div class="chart-container" style="height: 240px;"><canvas id="chart-A3"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper" style="margin-top: 1.5rem;">
+                        <table>
+                            <thead><tr id="table-headers"></tr></thead>
+                            <tbody id="log-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-nodos" style="display: none;">
+                <div class="ingesta-grid">
+                    <div class="card form-card">
+                        <h3 class="chart-title" style="color: var(--neon-wine); margin-bottom: 1.2rem;"><i data-lucide="edit-3"></i> Inyección Forzada de Vectores</h3>
+                        <form id="manual-data-form" onsubmit="procesarIngestaManual(event)">
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label>ID Vector</label>
+                                    <input type="text" id="ingesta-id" required placeholder="REG-2026-X" class="input-text">
+                                </div>
+                                <div class="form-group">
+                                    <label>Nodo Destino</label>
+                                    <select id="ingesta-lugar" required class="input-text select-custom">
+                                        <option value="PLANT-NORTH-01">PLANT-NORTH-01</option>
+                                        <option value="LOGISTIC-VALPO">LOGISTIC-VALPO</option>
+                                        <option value="URBAN-STGO">URBAN-STGO</option>
+                                        <option value="MINER-ANTOF">MINER-ANTOF</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 1rem;">
+                                <label>Módulo Lógico Destino</label>
+                                <select id="ingesta-modulo" required class="input-text select-custom" onchange="actualizarUnidadFormulario()">
+                                    <option value="carbono">Laboratorio Carbono (CO2)</option>
+                                    <option value="luminica">Laboratorio Lumínica (Luxes)</option>
+                                    <option value="ruido">Laboratorio Acústica (Decibelios)</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-top: 1rem;">
+                                <label>Magnitud (<span id="lbl-unidad">kg</span>) [Rango: 100 - 5000]</label>
+                                <input type="number" id="ingesta-cantidad" required min="100" max="5000" step="any" class="input-text">
+                            </div>
+                            <button type="submit" class="btn-submit-neon"><i data-lucide="zap"></i> Inyectar al Núcleo</button>
+                        </form>
+                        <div class="divider-horizontal">Ráfagas Estocásticas</div>
+                        <div class="drop-zone-mini" onclick="simularCargaCSV()">
+                            <p id="upload-text"><i data-lucide="box-select"></i> Disparar ráfaga masiva</p>
+                            <div class="progress-container"><div id="upload-progress-bar" class="progress-bar"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="card chart-manual-card">
+                        <h3 class="chart-title" style="color: var(--neon-wine);"><i data-lucide="radar"></i> Distribución Manual Por Nodos</h3>
+                        <div class="chart-container" style="height: 260px;"><canvas id="manualWineChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="logs-container" style="margin-top: 1.5rem; border-color: rgba(255, 0, 85, 0.2);">
+                    <div class="logs-header flex-mobile-column">
+                        <h3 class="chart-title" style="color: var(--neon-wine); margin-bottom: 0;"><i data-lucide="database"></i> Registro de Auditoría Especializada</h3>
+                        <div class="download-actions">
+                            <button onclick="exportarManualExcel()" class="btn-download" style="border-color: var(--neon-wine);"><i data-lucide="file-spreadsheet"></i> Excel</button>
+                            <button onclick="exportarManualPDF()" class="btn-download" style="border-color: var(--neon-wine);"><i data-lucide="file-text"></i> PDF</button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper" style="max-height: 220px;"><table style="min-width: 500px;"><thead><tr><th>Timestamp</th><th>ID</th><th>Nodo</th><th>Canal</th><th>Magnitud</th></tr></thead><tbody id="manual-table-body"></tbody></table></div>
+                </div>
+            </section>
+
+            <section id="view-settings" style="display: none;">
+                <div class="card">
+                    <h3 class="chart-title" style="margin-bottom: 1rem;"><i data-lucide="sliders"></i> Estado de los Canales Biométricos</h3>
+                    <input type="text" value="Física Analítica Cuántica Calibrada a Rango Operacional [100 - 5000] Síncrono Avanzado" readonly class="input-text">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
