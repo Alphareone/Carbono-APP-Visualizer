@@ -1,509 +1,325 @@
 // ==========================================================================
-// CONFIGURACIONES CUÁNTICAS GLOBALES Y FLUJO INDEPENDIENTE
+// CONTROL CORE - CARBONO-APP-VISUALIZER MULTIDIMENSIONAL
 // ==========================================================================
 lucide.createIcons();
 
 let activeTab = 'carbono';
 let totalRecords = 0;
-// Tablas de memoria 100% aisladas
+
+// Estructura de buffers independientes en memoria (DataPool)
 let dataPool = { carbono: [], luminica: [], ruido: [] };
-let poolIngestaManual = [];
-let metricsSum = { carbono: 0, luminica: 0, ruido: 0 };
-let simulationInterval;
+let historicalData = []; 
+let timeLabels = Array(10).fill('--:--:--');
 
-let timeLabels = Array(20).fill('--:--:--');
-let streamBufferData = Array(20).fill(2500);
+// Estado físico inercial (Random Walk)
+let ultimosValoresCanales = { carbono: 2500, luminica: 1200, ruido: 800 };
+
+// Identidad visual por canal ambiental
+const colorMap = { carbono: '#00ffa3', luminica: '#ffaa00', ruido: '#bd00ff' };
+const nombresCanales = { carbono: 'Huella de Carbono', luminica: 'Contaminación Lumínica', ruido: 'Ondas de Ruido Industrial' };
 let labelsNodos = ['PLANT-NORTH-01', 'LOGISTIC-VALPO', 'URBAN-STGO', 'MINER-ANTOF'];
-let datosManualesNodos = [0, 0, 0, 0];
 
-let chartA1, chartA2, chartA3, chartA4, chartA5, manualWineChart;
+// Instancias globales para el cuarteto dinámico de gráficos en pantalla
+let chartPrimary, chartSecondary, chartTertiary, chartQuaternary;
 
-const colorMap = {
-    carbono: '#00ff88',
-    luminica: '#ffaa00',
-    ruido: '#bd00ff'
-};
+// Inicialización de la consola al arrancar
+window.addEventListener('DOMContentLoaded', () => {
+    inicializarEcosistemaGraficos('carbono');
+});
 
 // ==========================================================================
-// RETORNO ÓPTIMO DE CONFIGURACIONES DE EJES SEGÚN MODO CLARO/OSCURO
+// ORQUESTADOR DE GRÁFICOS: GENERADOR DE 12 TIPOLOGÍAS ÚNICAS (Matriz 2x2)
 // ==========================================================================
-function obtenerConfiguracionEjes() {
-    const esModoOscuro = document.documentElement.getAttribute('data-theme') !== 'light';
-    const colorEtiquetas = esModoOscuro ? '#94a3b8' : '#4b5563';
-    const colorGrilla = esModoOscuro ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.04)';
+function inicializarEcosistemaGraficos(canal) {
+    if (chartPrimary) chartPrimary.destroy();
+    if (chartSecondary) chartSecondary.destroy();
+    if (chartTertiary) chartTertiary.destroy();
+    if (chartQuaternary) chartQuaternary.destroy();
 
-    return {
-        x: { ticks: { color: colorEtiquetas }, grid: { color: colorGrilla } },
-        y: { ticks: { color: colorEtiquetas }, grid: { color: colorGrilla } }
+    const ctx1 = document.getElementById('chartPrimary').getContext('2d');
+    const ctx2 = document.getElementById('chartSecondary').getContext('2d');
+    const ctx3 = document.getElementById('chartTertiary').getContext('2d');
+    const ctx4 = document.getElementById('chartQuaternary').getContext('2d');
+
+    const configEjes = {
+        scales: {
+            y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7280', fontSize: 10 } },
+            x: { grid: { display: false }, ticks: { color: '#6b7280', fontSize: 10 } }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
     };
-}
 
-function inicializarEntornoGrafico() {
-    const colorActual = colorMap[activeTab];
-    const configuracionEjes = obtenerConfiguracionEjes();
-    const esModoOscuro = document.documentElement.getAttribute('data-theme') !== 'light';
+    if (canal === 'carbono') {
+        document.getElementById('lbl-suite-title').innerText = "Consola Analítica: Huella de Carbono";
+        document.getElementById('lbl-suite-desc').innerText = "Análisis volumétrico de emisiones moleculares CO₂e continuas.";
+        document.getElementById('title-chart-1').innerText = "Línea Temporal Dinámica";
+        document.getElementById('title-chart-2').innerText = "Distribución por Nodo [Barras]";
+        document.getElementById('title-chart-3').innerText = "Masa de Gases [Área Polar]";
+        document.getElementById('title-chart-4').innerText = "Mitigación Proyectada [Área Suave]";
 
-    // CHART A1: Monitor Continuo con Fondo y Relleno Adaptativo al Tema
-    chartA1 = new Chart(document.getElementById('chart-A1').getContext('2d'), {
-        type: 'line',
-        data: { 
-            labels: timeLabels, 
-            datasets: [{ 
-                data: streamBufferData, 
-                borderColor: colorActual, 
-                borderWidth: 2, 
-                pointRadius: 0, 
-                tension: 0.3, 
-                fill: true, 
-                backgroundColor: esModoOscuro ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.35)' 
-            }] 
-        },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            animation: false, 
-            plugins: { legend: { display: false } }, 
-            scales: { 
-                x: { display: false }, 
-                y: { min: 0, max: 5500, ticks: { color: configuracionEjes.y.ticks.color }, grid: { color: configuracionEjes.y.grid.color } } 
-            } 
-        }
-    });
-
-    // Construcción de la matriz mutante A2
-    reconstruirGraficoA2();
-
-    // CHART A4: Historial de Promedio diario
-    chartA4 = new Chart(document.getElementById('chart-A4').getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-            datasets: [{ data: [1200, 2400, 3100, 1800, 2900, 2100], borderColor: colorActual, borderWidth: 2, tension: 0.4, pointRadius: 3, fill: false }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: configuracionEjes.x, y: { min: 0, max: 5000, ticks: configuracionEjes.y.ticks, grid: configuracionEjes.y.grid } } }
-    });
-
-    // CHART A5: Distribución Vectorial por Nodos
-    chartA5 = new Chart(document.getElementById('chart-A5').getContext('2d'), {
-        type: 'bar',
-        data: {
-            labels: labelsNodos,
-            datasets: [{ data: [1500, 2300, 4100, 1800], backgroundColor: 'rgba(0, 255, 136, 0.2)', borderColor: colorActual, borderWidth: 1, borderRadius: 4 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: configuracionEjes.x, y: { min: 0, max: 5000, ticks: configuracionEjes.y.ticks, grid: configuracionEjes.y.grid } } }
-    });
-
-    reconstruirGraficoA3('bubble');
-
-    // Radar Auxiliar Ingesta Manual
-    manualWineChart = new Chart(document.getElementById('manualWineChart').getContext('2d'), {
-        type: 'radar',
-        data: { labels: labelsNodos, datasets: [{ data: datosManualesNodos, borderColor: '#ff0055', backgroundColor: 'rgba(255, 0, 85, 0.1)', pointBackgroundColor: '#ff0055', borderWidth: 2 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false }, min: 0, max: 5000, angleLines: { color: configuracionEjes.x.grid.color }, grid: { color: configuracionEjes.x.grid.color }, pointLabels: { color: configuracionEjes.x.ticks.color } } } }
-    });
-}
-
-// ==========================================================================
-// MUTACIÓN ESPECÍFICA DE MÉTODOS DE ANÁLISIS (CHART A2)
-// ==========================================================================
-function reconstruirGraficoA2() {
-    if (chartA2) chartA2.destroy();
-    const ctx = document.getElementById('chart-A2').getContext('2d');
-    const colorActual = colorMap[activeTab];
-    const configuracionEjes = obtenerConfiguracionEjes();
-
-    if (activeTab === 'carbono') {
-        // MÉTODO: Curva ROC (Probabilidades de Clasificación de Umbrales Críticos)
-        chartA2 = new Chart(ctx, {
+        chartPrimary = new Chart(ctx1, {
             type: 'line',
-            data: {
-                labels: ['0.0', '0.2', '0.4', '0.6', '0.8', '1.0'],
-                datasets: [
-                    { data: [0, 0.55, 0.82, 0.91, 0.97, 1.0], borderColor: colorActual, backgroundColor: 'rgba(0, 255, 136, 0.05)', borderWidth: 2, pointRadius: 2, fill: true, tension: 0.2 },
-                    { data: [0, 0.2, 0.4, 0.6, 0.8, 1.0], borderColor: '#4b5563', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: configuracionEjes }
+            data: { labels: timeLabels, datasets: [{ data: Array(10).fill(2500), borderColor: '#00ffa3', backgroundColor: 'rgba(0, 255, 163, 0.08)', fill: true, tension: 0.35 }] },
+            options: configEjes
         });
-    } else if (activeTab === 'luminica') {
-        // MÉTODO: Histograma Frecuencial Discreto (Distribución de Densidad de Luxes)
-        chartA2 = new Chart(ctx, {
+
+        chartSecondary = new Chart(ctx2, {
             type: 'bar',
-            data: {
-                labels: ['1k lx', '2k lx', '3k lx', '4k lx', '5k lx'],
-                datasets: [{ data: [12, 28, 45, 18, 8], backgroundColor: colorActual, barPercentage: 1.0, categoryPercentage: 1.0, borderColor: configuracionEjes.x.grid.color, borderWidth: 1 }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: configuracionEjes }
+            data: { labels: labelsNodos, datasets: [{ data: [1200, 2300, 1800, 3100], backgroundColor: '#00ffa3', borderRadius: 4 }] },
+            options: configEjes
         });
-    } else if (activeTab === 'ruido') {
-        // MÉTODO: Transformada de Fourier (PSD - Densidad Espectral en Hz)
-        chartA2 = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    data: [{x: 63, y: 22}, {x: 125, y: 38}, {x: 250, y: 55}, {x: 500, y: 78}, {x: 1000, y: 42}, {x: 2000, y: 31}, {x: 4000, y: 15}],
-                    borderColor: colorActual, backgroundColor: colorActual, showLine: true, borderWidth: 2, pointRadius: 4, tension: 0.25
-                }]
-            },
-            options: { 
-                responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, 
-                scales: {
-                    x: { type: 'linear', min: 0, max: 4500, ticks: { color: configuracionEjes.x.ticks.color }, grid: { color: configuracionEjes.x.grid.color } },
-                    y: { min: 0, max: 90, ticks: { color: configuracionEjes.y.ticks.color }, grid: { color: configuracionEjes.y.grid.color } }
-                }
-            }
+
+        chartTertiary = new Chart(ctx3, {
+            type: 'polarArea',
+            data: { labels: labelsNodos, datasets: [{ data: [20, 35, 15, 30], backgroundColor: ['rgba(0,255,163,0.2)', 'rgba(0,255,163,0.4)', 'rgba(0,255,163,0.6)', 'rgba(0,255,163,0.8)'] }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
-    }
-}
 
-function reconstruirGraficoA3(tipoGeometria) {
-    if (chartA3) chartA3.destroy();
-    const ctx = document.getElementById('chart-A3').getContext('2d');
-    const colorActual = colorMap[activeTab];
-    const configuracionEjes = obtenerConfiguracionEjes();
+        chartQuaternary = new Chart(ctx4, {
+            type: 'line',
+            data: { labels: ['Ene', 'Feb', 'Mar', 'Abr'], datasets: [{ data: [3000, 2600, 2100, 1500], borderColor: '#00ffa3', backgroundColor: 'rgba(0,255,163,0.15)', fill: true, tension: 0.5 }] },
+            options: configEjes
+        });
 
-    if (tipoGeometria === 'radar') {
-        chartA3 = new Chart(ctx, {
+    } else if (canal === 'luminica') {
+        document.getElementById('lbl-suite-title').innerText = "Consola Analítica: Contaminación Lumínica";
+        document.getElementById('lbl-suite-desc').innerText = "Medición de flujo radiante fotónico e irradiación desmesurada.";
+        document.getElementById('title-chart-1').innerText = "Dispersión Cardinal [Radar]";
+        document.getElementById('title-chart-2').innerText = "Lúmenes por Vector [Scatter]";
+        document.getElementById('title-chart-3').innerText = "Eficiencia del Haz [Dona Radial]";
+        document.getElementById('title-chart-4').innerText = "Picos de Irradiación Estelar [Barras Finas]";
+
+        chartPrimary = new Chart(ctx1, {
             type: 'radar',
-            data: {
-                labels: labelsNodos,
-                datasets: [
-                    { label: 'Picos Decibelios (dB)', data: [1100, 2900, 3100, 1400], borderColor: colorActual, backgroundColor: 'rgba(189, 0, 255, 0.08)', borderWidth: 2, pointRadius: 3 },
-                    { label: 'Anillo Crítico Alto Ruido', data: [4000, 4000, 4000, 4000], borderColor: 'rgba(255, 0, 85, 0.2)', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: configuracionEjes.x.ticks.color, font: { size: 9 } } } }, scales: { r: { min: 0, max: 5000, ticks: { display: false }, angleLines: { color: configuracionEjes.x.grid.color }, grid: { color: configuracionEjes.x.grid.color }, pointLabels: { color: configuracionEjes.x.ticks.color } } } }
+            data: { labels: ['Norte', 'Sur', 'Este', 'Oeste', 'Cénit'], datasets: [{ data: [75, 40, 65, 80, 95], borderColor: '#ffaa00', backgroundColor: 'rgba(255, 170, 0, 0.15)' }] },
+            options: { responsive: true, maintainAspectRatio: false }
         });
-    } else {
-        chartA3 = new Chart(ctx, {
+
+        chartSecondary = new Chart(ctx2, {
+            type: 'scatter',
+            data: { datasets: [{ label: 'Fotones', data: [{x: 2, y: 1500}, {x: 4, y: 3200}, {x: 7, y: 4100}], backgroundColor: '#ffaa00' }] },
+            options: configEjes
+        });
+
+        chartTertiary = new Chart(ctx3, {
+            type: 'doughnut',
+            data: { labels: ['Útil', 'Dispersado'], datasets: [{ data: [70, 30], backgroundColor: ['#ffaa00', 'rgba(255,255,255,0.05)'] }] },
+            options: { responsive: true, maintainAspectRatio: false, circumference: 180, rotation: -90, plugins: { legend: { display: false } } }
+        });
+
+        chartQuaternary = new Chart(ctx4, {
+            type: 'bar',
+            data: { labels: ['V1', 'V2', 'V3', 'V4', 'V5'], datasets: [{ data: [400, 800, 200, 600, 900], backgroundColor: '#ffaa00', barThickness: 6 }] },
+            options: configEjes
+        });
+
+    } else if (canal === 'ruido') {
+        document.getElementById('lbl-suite-title').innerText = "Consola Analítica: Ondas de Ruido";
+        document.getElementById('lbl-suite-desc').innerText = "Análisis de presión acústica y picos estocásticos de decibelios.";
+        document.getElementById('title-chart-1').innerText = "Osciloscopio Acústico [Espectro]";
+        document.getElementById('title-chart-2').innerText = "Presión de Nodos [Barras H]";
+        document.getElementById('title-chart-3').innerText = "Impactos de Frecuencia [Burbujas]";
+        document.getElementById('title-chart-4').innerText = "Aislamiento Estructural [Radar Alterno]";
+
+        chartPrimary = new Chart(ctx1, {
+            type: 'line',
+            data: { labels: timeLabels, datasets: [{ data: Array(10).fill(800), borderColor: '#bd00ff', pointRadius: 0, borderWidth: 2, fill: false, tension: 0.5 }] },
+            options: configEjes
+        });
+
+        chartSecondary = new Chart(ctx2, {
+            type: 'bar',
+            data: { labels: labelsNodos, datasets: [{ data: [75, 105, 60, 90], backgroundColor: '#bd00ff' }] },
+            options: { indexAxis: 'y', ...configEjes }
+        });
+
+        chartTertiary = new Chart(ctx3, {
             type: 'bubble',
-            data: { datasets: [{ data: [{x:1.2,y:0.3,r:15}, {x:2.8,y:0.8,r:22}, {x:4.1,y:-0.4,r:12}], backgroundColor: activeTab === 'luminica' ? 'rgba(255, 170, 0, 0.2)' : 'rgba(0, 255, 136, 0.2)', borderColor: colorActual }] },
-            options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false } }, scales: { x: { min: 0, max: 5, ticks: { color: configuracionEjes.x.ticks.color }, grid: { display: false } }, y: { min: -1, max: 1.5, ticks: { color: configuracionEjes.y.ticks.color }, grid: { display: false } } } }
+            data: { datasets: [{ data: [{x: 8, y: 15, r: 10}, {x: 12, y: 25, r: 18}, {x: 5, y: 8, r: 7}], backgroundColor: '#bd00ff' }] },
+            options: configEjes
+        });
+
+        chartQuaternary = new Chart(ctx4, {
+            type: 'radar',
+            data: { labels: ['F1', 'F2', 'F3', 'F4'], datasets: [{ data: [90, 60, 85, 40], borderColor: '#bd00ff', backgroundColor: 'rgba(189,0,255,0.1)' }] },
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 }
 
 // ==========================================================================
-// FLUJO INTEGRADO ASÍNCRONO INDEPENDIENTE
+// STREAMING DE TELEMETRÍA ASÍNCRONA
 // ==========================================================================
 function feedDataStream() {
-    const timeStr = new Date().toLocaleTimeString();
-    const currentNodo = labelsNodos[Math.floor(Math.random() * labelsNodos.length)];
-    totalRecords++;
-
-    let valCarbono = Math.max(100, Math.min(5000, Math.floor(2400 + (Math.sin(totalRecords * 0.12) * 1100) + (Math.random() * 200 - 100))));
-    let valLuminica = Math.max(100, Math.min(5000, Math.floor(2800 + (Math.sin(totalRecords * 0.75) * 1500) + (Math.random() * 400 - 200))));
-    let valRuido = Math.max(100, Math.min(5000, Math.floor(900 + (Math.sin(totalRecords * 0.04) * 250) + (Math.random() > 0.8 ? 2000 : 200))));
-
-    // Memoria estricta segregada
-    dataPool.carbono.push({ time: timeStr, nodo: currentNodo, val: valCarbono });
-    dataPool.luminica.push({ time: timeStr, nodo: currentNodo, val: valLuminica });
-    dataPool.ruido.push({ time: timeStr, nodo: currentNodo, val: valRuido });
-
-    metricsSum.carbono += (valCarbono / 50000);
-    metricsSum.luminica = valLuminica;
-    metricsSum.ruido = valRuido;
-
-    document.getElementById('kpi-carbono').innerHTML = `${metricsSum.carbono.toFixed(3)} <span style="font-size:0.75rem;color:var(--text-muted)">t</span>`;
-    document.getElementById('kpi-luminica').innerText = `${Math.floor(metricsSum.luminica)} lx`;
-    document.getElementById('kpi-ruido').innerText = `${Math.floor(metricsSum.ruido)} dB`;
-    document.getElementById('kpi-registros').innerText = totalRecords;
-
-    let valorSeleccionado = (activeTab === 'carbono') ? valCarbono : (activeTab === 'luminica' ? valLuminica : valRuido);
-
-    timeLabels.shift(); timeLabels.push(timeStr);
-    streamBufferData.shift(); streamBufferData.push(valorSeleccionado);
-    chartA1.update('none');
-
-    if (chartA4 && chartA5) {
-        chartA4.data.datasets[0].data = chartA4.data.datasets[0].data.map(v => Math.max(500, Math.min(4800, Math.floor(v + (Math.random() * 80 - 40)))));
-        chartA4.update('none');
-
-        chartA5.data.datasets[0].data = [
-            Math.max(200, Math.min(5000, Math.floor(valorSeleccionado * 0.95 + (Math.random() * 200 - 100)))),
-            Math.max(200, Math.min(5000, Math.floor(valorSeleccionado * 0.72 + (Math.random() * 300 - 150)))),
-            Math.max(200, Math.min(5000, Math.floor(valorSeleccionado * 1.05 + (Math.random() * 200 - 100)))),
-            Math.max(200, Math.min(5000, Math.floor(valorSeleccionado * 0.88)))
-        ];
-        chartA5.update('none');
+    const ahora = new Date();
+    const timeStr = ahora.toTimeString().split(' ')[0];
+    
+    timeLabels.shift();
+    timeLabels.push(timeStr);
+    
+    const canales = ['carbono', 'luminica', 'ruido'];
+    
+    canales.forEach(canal => {
+        let ultimoValor = ultimosValoresCanales[canal];
+        let cambio = (Math.random() - 0.5) * 400;
+        let gravedad = (2300 - ultimoValor) * 0.03;
+        let anomalia = Math.random() < 0.02 ? (Math.random() - 0.3) * 1500 : 0;
+        
+        let nuevoValor = Math.round(ultimoValor + cambio + gravedad + anomalia);
+        if (nuevoValor > 5000) nuevoValor = 4900;
+        if (nuevoValor < 100) nuevoValor = 150;
+        
+        ultimosValoresCanales[canal] = nuevoValor;
+        totalRecords++;
+        
+        const registro = {
+            Timestamp: timeStr,
+            Nodo: labelsNodos[Math.floor(Math.random() * labelsNodos.length)],
+            Categoria: nombresCanales[canal],
+            Consumo: nuevoValor,
+            Impacto_kgCO2e: (nuevoValor * 0.41).toFixed(1)
+        };
+        
+        dataPool[canal].push(registro);
+        historicalData.push(registro);
+        
+        if (dataPool[canal].length > 300) dataPool[canal].shift();
+    });
+    
+    if (historicalData.length > 300) historicalData.shift();
+    
+    if (chartPrimary && (activeTab === 'carbono' || activeTab === 'ruido')) {
+        chartPrimary.data.labels = timeLabels;
+        let buffer = dataPool[activeTab].slice(-10).map(r => r.Consumo);
+        while(buffer.length < 10) buffer.unshift(ultimosValoresCanales[activeTab]);
+        chartPrimary.data.datasets[0].data = buffer;
+        chartPrimary.update('none');
     }
-
-    if (chartA3) {
-        if (activeTab === 'ruido' && chartA3.config.type === 'radar') {
-            chartA3.data.datasets[0].data = [valRuido, Math.floor(valRuido * 0.8), Math.floor(valRuido * 1.05), Math.floor(valRuido * 0.65)];
-            chartA3.update('none');
-        } else if (chartA3.config.type === 'bubble') {
-            chartA3.data.datasets[0].data = [
-                { x: 1.5, y: (valorSeleccionado / 5000) * 2 - 1, r: Math.max(6, (valCarbono % 25)) },
-                { x: 2.8, y: Math.cos(totalRecords * 0.1) * 0.6, r: Math.max(8, (valLuminica % 20)) },
-                { x: 4.2, y: (valRuido / 5000) * 1.4 - 0.5, r: Math.max(5, (valRuido % 15)) }
-            ];
-            chartA3.update('none');
-        }
-    }
-
-    if (totalRecords % 2 === 0) renderTableData();
+    
+    document.getElementById('lbl-total-co2').innerText = `${ultimosValoresCanales[activeTab]} u`;
+    document.getElementById('lbl-total-records').innerText = totalRecords;
+    
+    updateTable();
 }
 
-// ==========================================================================
-// RECONFIGURACIÓN DE IDENTIDAD Y COLORES POR PESTAÑA
-// ==========================================================================
-function switchTableTab(tabName) {
-    activeTab = tabName;
-    const colorActual = colorMap[tabName];
+let simulationInterval = setInterval(feedDataStream, 600);
+
+function cambiarCanalAmbiental(canal) {
+    if (!dataPool[canal]) return;
+    activeTab = canal;
     
-    document.documentElement.style.setProperty('--active-color', colorActual);
+    document.querySelectorAll('.btn-channel').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.btn-${canal}`).classList.add('active');
+    
+    inicializarEcosistemaGraficos(canal);
+    
+    const cardKpi1 = document.getElementById('card-kpi-1');
+    const lblKpi1 = document.getElementById('lbl-total-co2');
+    lblKpi1.style.color = colorMap[canal];
+    cardKpi1.style.borderLeftColor = colorMap[canal];
+    lblKpi1.innerText = `${ultimosValoresCanales[canal]} u`;
+    
+    updateTable();
+}
 
-    let textA1 = 'CANAL A1: OSCILOSCOPIO CO2 (FLUJO INDUSTRIAL DENSO)';
-    let textA2 = 'CANAL A2: ANALÍTICA ROC DE CLASIFICACIÓN DE ALERTA';
-    let textA3 = 'CANAL A3: MAPA DE DENSIDAD TÉRMICA MOLECULAR';
-    let textA4 = 'CANAL A4: HISTORIAL DE TENDENCIA CO2 ACUMULADA';
-    let textA5 = 'CANAL A5: CONCENTRACIÓN CO2 POR ESTACIONES';
+function updateTable() {
+    const tbody = document.getElementById('table-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    const ultimos30 = historicalData.slice(-30);
+    [...ultimos30].reverse().forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${row.Timestamp}</td>
+            <td><span class="badge-nodo">${row.Nodo}</span></td>
+            <td>${row.Categoria}</td>
+            <td style="font-weight:700;">${row.Consumo} u</td>
+            <td><span class="impact-tag">${row.Impacto_kgCO2e} kg</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
 
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`tab-${tabName}`).classList.add('active');
+function switchView(viewId) {
+    document.querySelectorAll('main > section').forEach(s => s.style.display = 'none');
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+    
+    const sec = document.getElementById(`view-${viewId}`);
+    if (sec) sec.style.display = 'block';
+    const btn = document.getElementById(`btn-${viewId}`);
+    if (btn) btn.classList.add('active');
+}
 
-    const headersRow = document.getElementById('table-headers');
+function exportToExcel() {
+    const workbook = XLSX.utils.book_new();
+    const pestañas = [
+        { id: 'carbono', hoja: "Huella de Carbono" },
+        { id: 'luminica', hoja: "Contaminación Lumínica" },
+        { id: 'ruido', hoja: "Ondas de Ruido" }
+    ];
+    let flags = false;
 
-    if (tabName === 'carbono') {
-        reconstruirGraficoA3('bubble');
-        headersRow.innerHTML = `<th>Timestamp</th><th>Nodo Operativo</th><th>Estado Gas</th><th>Indicador Base</th><th>Masa CO2 (ppm)</th>`;
-    } else if (tabName === 'luminica') {
-        textA1 = 'CANAL A1: FRECUENCIA FOTÓNICA EN TIEMPO REAL (LUXES)';
-        textA2 = 'CANAL A2: HISTOGRAMA DE DISTRIBUCIÓN CONTINUA FOTÓNICA';
-        textA3 = 'CANAL A3: ANÁLISIS DE DISPERSIÓN DISCRETA DE PARTÍCULAS';
-        textA4 = 'CANAL A4: FLUJO LUMÍNICO INTEGRADO DIARIO';
-        textA5 = 'CANAL A5: INTENSIDAD FOTÓNICA PROMEDIO DE ZONA';
-        reconstruirGraficoA3('bubble');
-        headersRow.innerHTML = `<th>Timestamp</th><th>Célula Lumínica</th><th>Sensibilidad fotón</th><th>Rango Óptico</th><th>Intensidad (lx)</th>`;
-    } else if (tabName === 'ruido') {
-        textA1 = 'CANAL A1: ESPECTROGRAMA DE RUIDO TRANSITORIO';
-        textA2 = 'CANAL A2: TRANSFORMADA DE FOURIER (FFT) - POTENCIA DE FRECUENCIA';
-        textA3 = 'CANAL A3: SONAR DE PICOS OPERATIVOS CON BARRERA DE EXCESO';
-        textA4 = 'CANAL A4: EVOLUCIÓN HISTÓRICA DE PRESIÓN ACÚSTICA';
-        textA5 = 'CANAL A5: IMPACTO DE DECIBELIOS POR PUNTOS DE ESCUCHA';
-        reconstruirGraficoA3('radar');
-        headersRow.innerHTML = `<th>Timestamp</th><th>Estación de Escucha</th><th>Modulación Frecuencia</th><th>Umbral Crítico</th><th>Presión Acústica (dB)</th>`;
-    }
-
-    document.getElementById('lbl-chart-a1').innerText = textA1;
-    document.getElementById('lbl-chart-a2').innerText = textA2;
-    document.getElementById('lbl-chart-a3').innerText = textA3;
-    document.getElementById('lbl-chart-a4').innerText = textA4;
-    document.getElementById('lbl-chart-a5').innerText = textA5;
-
-    // Mutar tonalidades generales
-    chartA1.data.datasets[0].borderColor = colorActual;
-    chartA4.data.datasets[0].borderColor = colorActual;
-    chartA5.data.datasets[0].borderColor = colorActual;
-    chartA5.data.datasets[0].backgroundColor = (tabName === 'carbono') ? 'rgba(0,255,136,0.2)' : ((tabName === 'luminica') ? 'rgba(255,170,0,0.2)' : 'rgba(189,0,255,0.2)');
-
-    chartA4.data.datasets[0].data = tabName === 'ruido' ? [600, 1400, 2800, 900, 3100, 1100] : (tabName === 'luminica' ? [4000, 3100, 800, 1200, 3500, 4400] : [1200, 2400, 3100, 1800, 2900, 2100]);
-
-    // Mutar método matemático de la matriz A2
-    reconstruirGraficoA2();
-
-    // Sincronizar búfer del osciloscopio A1 con memoria independiente
-    const recent = dataPool[tabName].slice(-20);
-    for (let i = 0; i < 20; i++) {
-        if (recent[i]) {
-            timeLabels[i] = recent[i].time;
-            streamBufferData[i] = recent[i].val;
+    pestañas.forEach(p => {
+        const data = dataPool[p.id];
+        if (data && data.length > 0) {
+            const sheet = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(workbook, sheet, p.hoja);
+            flags = true;
         } else {
-            timeLabels[i] = '--:--:--';
-            streamBufferData[i] = 0;
-        }
-    }
-
-    chartA1.update();
-    chartA4.update();
-    chartA5.update();
-    renderTableData();
-}
-
-function renderTableData() {
-    const tbody = document.getElementById('log-table-body');
-    if (!tbody) return; tbody.innerHTML = '';
-    const logs = dataPool[activeTab].slice(-5).reverse();
-
-    logs.forEach(item => {
-        const row = document.createElement('tr');
-        let est = 'STABLE', clr = 'background:rgba(0,255,136,0.08);color:#00ff88;border:1px solid rgba(0,255,136,0.15);';
-
-        if (item.val >= 3900) {
-            est = 'CRITICAL-SPIKE';
-            clr = 'background:rgba(255,0,85,0.08);color:#ff0055;border:1px solid rgba(255,0,85,0.15);';
-        } else if (item.val <= 700) {
-            est = 'LOW-ANOMALY';
-            clr = 'background:rgba(0,191,255,0.08);color:#00bfff;border:1px solid rgba(0,191,255,0.15);';
-        }
-
-        let m1 = activeTab === 'carbono' ? 'Filtro CO2 Fijo' : (activeTab === 'luminica' ? 'Fotodiodo Corregido' : 'Ponderación Tipo A');
-        row.innerHTML = `<td>${item.time}</td><td style="font-weight:500;">${item.nodo}</td><td><span class="tag" style="${clr}">${est}</span></td><td>${m1}</td><td style="font-weight:bold;">${item.val}</td>`;
-        tbody.appendChild(row);
-    });
-}
-
-// ==========================================================================
-// CONMUTACIÓN DE ESQUEMAS CLARO/OSCURO COMPLETA (CORREGIDA)
-// ==========================================================================
-function toggleTheme() {
-    const el = document.documentElement;
-    const isLight = el.getAttribute('data-theme') === 'light';
-    const nuevoTema = isLight ? 'dark' : 'light';
-    el.setAttribute('data-theme', nuevoTema);
-    document.getElementById('theme-text').innerText = isLight ? "Modo Claro" : "Modo Oscuro";
-
-    const nuevosEjes = obtenerConfiguracionEjes();
-    
-    // Corregir relleno adaptativo e indicadores del gráfico A1
-    if (chartA1) {
-        chartA1.data.datasets[0].backgroundColor = (nuevoTema === 'dark') ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.35)';
-        chartA1.options.scales.y.ticks.color = nuevosEjes.y.ticks.color;
-        chartA1.options.scales.y.grid.color = nuevosEjes.y.grid.color;
-        chartA1.update('none');
-    }
-
-    const listaOtrosGraficos = [chartA4, chartA5];
-    listaOtrosGraficos.forEach(chartInstance => {
-        if (chartInstance) {
-            if (chartInstance.options.scales.x) chartInstance.options.scales.x.ticks.color = nuevosEjes.x.ticks.color;
-            if (chartInstance.options.scales.y) {
-                chartInstance.options.scales.y.ticks.color = nuevosEjes.y.ticks.color;
-                chartInstance.options.scales.y.grid.color = nuevosEjes.y.grid.color;
-            }
-            chartInstance.update();
+            const sheetVacia = XLSX.utils.json_to_sheet([{ Alerta: "Sin telemetrías registradas" }]);
+            XLSX.utils.book_append_sheet(workbook, sheetVacia, p.hoja);
         }
     });
 
-    // Reconstrucciones estructurales forzadas para refrescar tipografías internas
-    reconstruirGraficoA2();
-    reconstruirGraficoA3(activeTab === 'ruido' ? 'radar' : 'bubble');
-    
-    if (manualWineChart) {
-        manualWineChart.options.scales.r.angleLines.color = nuevosEjes.x.grid.color;
-        manualWineChart.options.scales.r.grid.color = nuevosEjes.x.grid.color;
-        manualWineChart.options.scales.r.pointLabels.color = nuevosEjes.x.ticks.color;
-        manualWineChart.update();
-    }
+    if(!flags) return alert("Búfer vacío.");
+    XLSX.writeFile(workbook, `Reporte_CApp_Visualizer_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
-// ==========================================================================
-// EXPORTADORES INDEPENDIENTES DE TABLAS
-// ==========================================================================
-function exportActiveTabToExcel() {
-    const subsetData = dataPool[activeTab];
-    if (!subsetData.length) return alert(`El registro del canal ${activeTab.toUpperCase()} está vacío.`);
-    
-    const ws = XLSX.utils.json_to_sheet(subsetData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Registros");
-    XLSX.writeFile(wb, `EcoTrack_Registros_${activeTab.toUpperCase()}.xlsx`);
-}
-
-function exportActiveTabToPDF() {
-    const subsetData = dataPool[activeTab];
-    if (!subsetData.length) return alert(`El registro del canal ${activeTab.toUpperCase()} está vacío.`);
-    
+function exportToPDF() {
+    if(!historicalData.length) return alert("Matriz vacía.");
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
+    doc.setFont("Helvetica", "bold"); doc.setFontSize(13);
+    doc.text("CARBONO-APP-VISUALIZER - REGISTRO HISTÓRICO CONSOLIDADO", 14, 20);
     
-    const colorRGB = activeTab === 'carbono' ? [0, 255, 136] : (activeTab === 'luminica' ? [255, 170, 0] : [189, 0, 255]);
-
-    doc.setFont("helvetica", "bold");
-    doc.text(`REPORTE EXCLUSIVO - CANAL DE MONITOREO: ${activeTab.toUpperCase()}`, 14, 18);
-    
+    const rows = historicalData.map(i => [i.Timestamp, i.Nodo, i.Categoria, `${i.Consumo} u`, `${i.Impacto_kgCO2e} kg`]);
     doc.autoTable({
-        startY: 25,
-        head: [['Timestamp / Hora', 'Sensor / Estación de Origen', 'Valor Cuantificado']],
-        body: subsetData.map(i => [i.time, i.nodo, i.val]),
-        headStyles: { fillColor: colorRGB, textColor: [0, 0, 0] }
+        startY: 28,
+        head: [['Timestamp', 'Nodo Emisor', 'Dimensión Ambiental', 'Lectura Física', 'Impacto Neto']],
+        body: rows,
+        styles: { headStyles: { fillColor: [15, 23, 42] } }
     });
-    
-    doc.save(`Reporte_Independent_${activeTab.toUpperCase()}.pdf`);
+    doc.save(`Auditoria_CarbonoApp_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
-// FUNCIONES DE SOPORTE GENERALES
-function switchView(viewName) {
-    ['dashboard', 'nodos', 'settings'].forEach(v => {
-        document.getElementById(`view-${v}`).style.display = (v === viewName) ? 'block' : 'none';
-        document.getElementById(`btn-${v}`).classList.toggle('active', v === viewName);
-    });
-    if (viewName === 'nodos') setTimeout(() => { manualWineChart.resize(); }, 30);
-}
-
-function procesarIngestaManual(event) {
-    event.preventDefault();
-    const id = document.getElementById('ingesta-id').value;
-    const lugar = document.getElementById('ingesta-lugar').value;
-    const modulo = document.getElementById('ingesta-modulo').value;
-    const cantidad = parseFloat(document.getElementById('ingesta-cantidad').value);
-    const timeStr = new Date().toLocaleTimeString();
-
-    dataPool[modulo].push({ time: timeStr, nodo: `${id} (${lugar})`, val: cantidad });
-    poolIngestaManual.push({ time: timeStr, id: id, nodo: lugar, canal: modulo.toUpperCase(), val: cantidad });
-    totalRecords++;
-
-    const idx = labelsNodos.indexOf(lugar);
-    if (idx !== -1) {
-        datosManualesNodos[idx] += cantidad;
-        manualWineChart.update();
+function toggleTheme() {
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    const txt = document.getElementById('theme-text');
+    const ico = document.getElementById('theme-icon');
+    if(theme === 'light') {
+        if(txt) txt.innerText = 'Modo Oscuro';
+        if(ico) ico.setAttribute('data-lucide', 'moon');
+    } else {
+        if(txt) txt.innerText = 'Modo Claro';
+        if(ico) ico.setAttribute('data-lucide', 'sun');
     }
-
-    if(modulo === activeTab) renderTableData();
-    renderManualTableData();
-
-    document.getElementById('manual-data-form').reset();
-    alert("Inyección manual completada exitosamente.");
-}
-
-function renderManualTableData() {
-    const tbody = document.getElementById('manual-table-body');
-    if (!tbody) return; tbody.innerHTML = '';
-    [...poolIngestaManual].reverse().forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${item.time}</td><td style="color:var(--neon-wine);font-weight:bold;">${item.id}</td><td>${item.nodo}</td><td><span class="tag" style="background:rgba(255,0,85,0.06);color:var(--neon-wine);border:1px solid rgba(255,0,85,0.15)">${item.canal}</span></td><td style="font-weight:bold;">${item.val}</td>`;
-        tbody.appendChild(row);
-    });
-}
-
-function actualizarUnidadFormulario() {
-    const mod = document.getElementById('ingesta-modulo').value;
-    document.getElementById('lbl-unidad').innerText = mod === 'carbono' ? 'kg' : (mod === 'luminica' ? 'lx' : 'dB');
-}
-
-function simularLoginGoogle() {
-    document.getElementById('user-avatar').src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80";
-    document.getElementById('user-name').innerText = "Dr. Analista Quantum";
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-interface').style.display = 'flex';
-    inicializarEntornoGrafico();
-    switchTableTab('carbono');
-    simulationInterval = setInterval(feedDataStream, 500);
-}
-
-function exportarManualExcel() {
-    if(!poolIngestaManual.length) return alert("Auditoría vacía.");
-    const ws = XLSX.utils.json_to_sheet(poolIngestaManual);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Auditoria");
-    XLSX.writeFile(wb, "Auditoria_Manual.xlsx");
-}
-
-function exportarManualPDF() {
-    if(!poolIngestaManual.length) return alert("Auditoría vacía.");
-    const { jsPDF } = window.jspdf; const doc = new jsPDF();
-    doc.text("INFORME DE INGESTA FORZADA MANUAL", 14, 18);
-    doc.autoTable({ startY: 25, head: [['Timestamp', 'ID', 'Nodo', 'Canal', 'Magnitud']], body: poolIngestaManual.map(i => [i.time, i.id, i.nodo, i.canal, i.val]), styles: { headStyles: { fillColor: [255, 0, 85] } } });
-    doc.save("Auditoria_Manual.pdf");
+    lucide.createIcons();
+    inicializarEcosistemaGraficos(activeTab);
 }
 
 function simularCargaCSV() {
-    const text = document.getElementById('upload-text');
     const bar = document.getElementById('upload-progress-bar');
-    text.innerText = "Transfiriendo lote masivo..."; bar.style.width = "100%";
+    const txt = document.getElementById('upload-text');
+    if(!bar || !txt) return;
+    txt.innerText = "Sincronizando registros en el Core de Carbono-App...";
+    bar.style.width = "100%";
     setTimeout(() => {
-        for(let i=0; i<15; i++) feedDataStream();
-        bar.style.width = "0%"; text.innerText = "Disparar ráfaga masiva";
-    }, 600);
+        alert("Simulación exitosa: 150 vectores acoplados al Visualizer.");
+        txt.innerText = "Click aquí para simular importación de lote CSV";
+        bar.style.width = "0%";
+    }, 2000);
 }
