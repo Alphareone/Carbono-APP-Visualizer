@@ -1,6 +1,6 @@
-# 🚀 EcoTrack Quantum OS (CarbonoApp) - Advanced Analytics Suite
+#  EcoTrack Quantum OS (CarbonoApp) - Advanced Analytics Suite
 
-## 📌 Origen del Proyecto: De "CarbonoApp" a la Suite Multidimensional
+##  Origen del Proyecto: De "CarbonoApp" a la Suite Multidimensional
 
 **EcoTrack Quantum OS** nació de una necesidad de evolución técnica y estratégica. El proyecto original, **CarbonoApp**, fue concebido inicialmente como una herramienta lineal y estática para registrar la huella de carbono industrial de manera centralizada. 
 
@@ -10,7 +10,7 @@ Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y 
 
 ---
 
-## 💎 Características Innovadoras y Diferenciales
+##  Características Innovadoras y Diferenciales
 
 *   **Aislamiento de Datos Cuánticos (`dataPool`):** A diferencia de arquitecturas compartidas, cada laboratorio (Carbono, Lumínica, Acústica) posee su propio hilo de memoria segregado. Al alternar de pestaña, la base de datos local purga y reconstruye el búfer en caliente.
 *   **Mapeo Gráfico Pentagonal Asíncrono:** El sistema procesa e interactúa con 5 gráficos simultáneos mediante *Chart.js*, optimizados para evitar fugas de memoria mediante la destrucción y reconstrucción controlada de instancias (`chart.destroy()`).
@@ -25,7 +25,7 @@ Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y 
 
 ---
 
-## 🛠️ Stack Tecnológico
+##  Stack Tecnológico
 
 *   **Core:** HTML5 / CSS3 Avanzado (Variables nativas CSS y selectores adaptativos).
 *   **Logic Core:** Vanilla JavaScript ES6+ (Programación asíncrona y modular).
@@ -35,12 +35,16 @@ Para resolver esto, se decidió **rediseñar por completo el núcleo gráfico y 
 
 ---
 
-## 📂 Arquitectura del Repositorio
+##  Arquitectura del Repositorio
 
-```text
 ├── css/
-│   └── style.css       # Hoja de estilos cuántica, variables de tema y responsive grid
+│   └── style.css       # Hoja de estilos cuántica, variables de tema y responsive grid.
 ├── js/
-│   └── script.js      # Motor lógico, orquestador de gráficos y pipelines de exportación
-├── index.html         # Estructura e interfaz semántica de la suite analítica
-└── README.md          # Documentación técnica del proyecto
+│   └── script.js      # Motor lógico, orquestador de gráficos y pipelines de exportación.
+├── index.html         # Estructura e interfaz semántica de la suite analítica.
+└── README.md          # Documentación técnica del proyecto.
+
+---
+
+## 
+Diseñado y Desarrollado por lod miembros del equipo adjunto de ABCALINK
