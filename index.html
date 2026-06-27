@@ -3,214 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbono-App-Visualizer</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <title>SISTEMA MAEDIS - Protocolo de Monitoreo Ambiental</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
+    <canvas id="particle-canvas"></canvas>
 
-    <aside>
-        <div class="aside-top-flow">
-            <div class="brand">
-                <i data-lucide="cpu"></i> Carbono App
-            </div>
-            <div class="menu-container">
-                <a href="#dashboard" id="btn-dashboard" class="menu-item active" onclick="switchView('dashboard')">
-                    <i data-lucide="activity"></i> Telemetría Live
-                </a>
-                <a href="#nodos" id="btn-nodos" class="menu-item" onclick="switchView('terminal')">
-                    <i data-lucide="terminal"></i> Nodos de Carga
-                </a>
-                <a href="#settings" id="btn-settings" class="menu-item" onclick="switchView('settings')">
-                    <i data-lucide="sliders"></i> Configuración
-                </a>
-            </div>
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-microchip" style="color: var(--neon-green);"></i> MAEDIS v2.0
         </div>
+        <div class="nav-item active" data-target="dashboard">
+            <i class="fa-solid fa-chart-column"></i> Panel de Control
+        </div>
+        <div class="nav-item" data-target="radar-territorial">
+            <i class="fa-solid fa-satellite-dish"></i> Radar Territorial
+        </div>
+        <div class="nav-item" data-target="registros">
+            <i class="fa-solid fa-terminal"></i> Terminal de Datos
+        </div>
+        <div class="nav-item" style="margin-top: auto; color: #ff4757;" id="btn-salir">
+            <i class="fa-solid fa-power-off"></i> Desconectar
+        </div>
+    </nav>
 
-        <div class="geographical-radar-card-aside">
-            <div class="radar-header-meta-aside">
-                <h4 class="chart-title-aside"><i data-lucide="globe"></i> Radar Territorio chileno "</h4>
-                <p style="font-size: 0.65rem; color: #6b7280; margin: 0;">Impulsos moleculares en vivo</p>
-            </div>
+    <main class="main-content">
+        
+        <section id="dashboard" class="view active">
+            <header>
+                <h1><i class="fa-solid fa-network-wired"></i> Subsistemas de Monitoreo Crítico</h1>
+            </header>
             
-            <div class="mapa-kaspersky-canvas-container">
-                <canvas id="kasperskyMapCanvas"></canvas>
-                <div class="chile-silhouette-overlay"></div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="carbx"><span>■</span> CARB-X</button>
+                <button class="tab-btn" data-tab="luxnet"><span>■</span> LUX-NET</button>
+                <button class="tab-btn" data-tab="sonarind"><span>■</span> SONAR-IND</button>
+                <button class="tab-btn" data-tab="thermogen"><span>■</span> THERMO-GEN</button>
+            </div>
 
-                <div class="pigmento-nodo" id="geo-antof" style="top: 25%; left: 45%;">
-                    <span class="radar-pulse"></span>
-                    <span class="core-dot"></span>
-                </div>
-                <div class="pigmento-nodo" id="geo-valpo" style="top: 55%; left: 49%;">
-                    <span class="radar-pulse"></span>
-                    <span class="core-dot"></span>
-                </div>
-                <div class="pigmento-nodo" id="geo-stgo" style="top: 64%; left: 52%;">
-                    <span class="radar-pulse"></span>
-                    <span class="core-dot"></span>
+            <div id="carbx" class="tab-content active">
+                <div class="charts-grid">
+                    <div class="chart-card neon-border-green"><canvas id="carbx-line"></canvas></div>
+                    <div class="chart-card neon-border-green"><canvas id="carbx-bar"></canvas></div>
+                    <div class="chart-card neon-border-green"><canvas id="carbx-radar"></canvas></div>
+                    <div class="chart-card neon-border-green"><canvas id="carbx-polar"></canvas></div>
                 </div>
             </div>
 
-            <div class="cyber-stat-row-aside">
-                <span class="cyber-label">FLUJO GLOBAL</span>
-                <span class="cyber-value value-green" id="cyber-flow-rate">150 p/s</span>
+            <div id="luxnet" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-line"></canvas></div>
+                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-bar"></canvas></div>
+                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-doughnut"></canvas></div>
+                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-bubble"></canvas></div>
+                </div>
+            </div>
+
+            <div id="sonarind" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card neon-border-purple"><canvas id="sonarind-line"></canvas></div>
+                    <div class="chart-card neon-border-purple"><canvas id="sonarind-bar"></canvas></div>
+                    <div class="chart-card neon-border-purple"><canvas id="sonarind-radar"></canvas></div>
+                    <div class="chart-card neon-border-purple"><canvas id="sonarind-doughnut"></canvas></div>
+                </div>
+            </div>
+
+            <div id="thermogen" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card neon-border-red"><canvas id="thermogen-line"></canvas></div>
+                    <div class="chart-card neon-border-red"><canvas id="thermogen-bar"></canvas></div>
+                    <div class="chart-card neon-border-red"><canvas id="thermogen-polar"></canvas></div>
+                    <div class="chart-card neon-border-red"><canvas id="thermogen-radar"></canvas></div>
+                </div>
+            </div>
+            <div class="system-glossary">
+            <h3><i class="fa-solid fa-book-journal-whills"></i> Directorio de Nomenclatura Oficial</h3>
+            <div class="glossary-grid">
+                <div class="glossary-card border-green">
+                    <h4>CARB-X</h4>
+                    <p><strong>Análisis de Dispersión de CO2.</strong> Monitoreo continuo de gases de efecto invernadero, huella de carbono industrial y calidad del aire en zonas saturadas.</p>
+                </div>
+                <div class="glossary-card border-yellow">
+                    <h4>LUX-NET</h4>
+                    <p><strong>Monitoreo de Fotocontaminación.</strong> Rastreo de saturación lumínica y contaminación visual espectral en cuadrículas urbanas y zonas protegidas.</p>
+                </div>
+                <div class="glossary-card border-purple">
+                    <h4>SONAR-IND</h4>
+                    <p><strong>Simulador de Presión Sonora.</strong> Medición de decibelios y fricción mecánica para evaluar el impacto acústico de fuentes industriales, aeropuertos y autopistas.</p>
+                </div>
+                <div class="glossary-card border-red">
+                    <h4>THERMO-GEN</h4>
+                    <p><strong>Rastreador de Alteraciones Bioquímicas.</strong> Análisis térmico y detección de emisiones de biogás (CH4, H2S) provenientes de lixiviados y vertederos.</p>
+                </div>
             </div>
         </div>
-
-        <div class="theme-switch-box">
-            <button class="toggle-btn" onclick="toggleTheme()">
-                <i id="theme-icon" data-lucide="moon"></i> <span id="theme-text">Modo Oscuro</span>
-            </button>
-        </div>
-    </aside>
-
-    <main>
-        <header>
-            <div>
-                <h1 id="page-title">ECO-Dashboard Visual</h1>
-                <p class="subtitle">Consola de Simulación de Canales Físicos y Ambientales Separados</p>
-            </div>
-            <div class="status-badge">
-                <div class="pulse"></div> NÚCLEO CORE OPERATIVO
-            </div>
-        </header>
-
-        <section id="view-dashboard">
-            <div class="quantum-grid-layout">
-                
-                <div class="main-analytics-column">
-                    <div class="card">
-                        <div class="flex-mobile-column" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                            <div>
-                                <h3 class="chart-title" id="lbl-suite-title">Cargando Canales...</h3>
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;" id="lbl-suite-desc">Procesando señales en memoria intermedia.</p>
-                            </div>
-                            
-                            <div class="channel-selector-container">
-                                <button onclick="cambiarCanalAmbiental('carbono')" class="btn-channel btn-carbono active">
-                                    <i data-lucide="leaf"></i> CO₂
-                                </button>
-                                <button onclick="cambiarCanalAmbiental('luminica')" class="btn-channel btn-luminica">
-                                    <i data-lucide="sun"></i> Lumínica
-                                </button>
-                                <button onclick="cambiarCanalAmbiental('ruido')" class="btn-channel btn-ruido">
-                                    <i data-lucide="waveform"></i> Ruido
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="charts-subgrid">
-                            <div class="chart-wrapper-box">
-                                <p class="subchart-label" id="title-chart-1">Línea Temporal Dinámica</p>
-                                <div class="canvas-container"><canvas id="chartPrimary"></canvas></div>
-                            </div>
-                            <div class="chart-wrapper-box">
-                                <p class="subchart-label" id="title-chart-2">Distribución Nominal</p>
-                                <div class="canvas-container"><canvas id="chartSecondary"></canvas></div>
-                            </div>
-                            <div class="chart-wrapper-box">
-                                <p class="subchart-label" id="title-chart-3">Análisis de Masa</p>
-                                <div class="canvas-container"><canvas id="chartTertiary"></canvas></div>
-                            </div>
-                            
-                            <div class="chart-wrapper-box">
-                                <p class="subchart-label" id="title-chart-4">Porcentaje Total por Canal del Dashboard</p>
-                                <div class="canvas-container"><canvas id="chartQuaternary"></canvas></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="logs-container">
-                        <div class="logs-header">
-                            <h3 class="chart-title"><i data-lucide="database"></i> Auditoría Remota de Datos Entrantes</h3>
-                            <div class="download-actions">
-                                <button onclick="exportToExcel()" class="btn-download">
-                                    <i data-lucide="file-spreadsheet"></i> Excel
-                                </button>
-                                <button onclick="exportToPDF()" class="btn-download">
-                                    <i data-lucide="file-text"></i> PDF
-                                </button>
-                            </div>
-                        </div>
-                        <div class="table-wrapper">
-                            <table id="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Timestamp</th>
-                                        <th>Nodo Emisor</th>
-                                        <th>Dimensión</th>
-                                        <th>Lectura Física</th>
-                                        <th>Impacto Red</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-body">
-                                    </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="kpi-vertical-column">
-                    <div class="card kpi-v-card kpi-border-active" id="card-kpi-1">
-                        <div class="card-header" id="lbl-kpi-title">Magnitud de Canal <i data-lucide="zap"></i></div>
-                        <div class="card-value" id="lbl-total-co2">0 u</div>
-                    </div>
-                    
-                    <div class="card kpi-v-card" style="border-left-color: #00bfff;">
-                        <div class="card-header">Estabilidad del Core <i data-lucide="activity" style="color:#00bfff; width:12px;"></i></div>
-                        <div class="card-value">99.4%</div>
-                    </div>
-                    
-                    <div class="card kpi-v-card" style="border-left-color: #ff4500;">
-                        <div class="card-header">Muestras Acumuladas <i data-lucide="layers" style="color:#ff4500; width:12px;"></i></div>
-                        <div class="card-value" id="lbl-total-records">0</div>
-                    </div>
-
-                    <div class="card shadow-info-box">
-                        <h4 style="font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
-                            <i data-lucide="info" style="width:14px; height:14px;"></i> Arquitectura Aislada
-                        </h4>
-                        <p style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.45; margin: 0;">
-                            Los buffers de memoria se purgan y reconstruyen al conmutar canales. El radar de partículas de Chile a la izquierda mantiene su ciclo de renderizado ininterrumpido en segundo plano.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
         </section>
 
-        <section id="view-terminal" style="display: none;">
-            <div class="card">
-                <h3 class="chart-title" style="margin-bottom: 1rem;"><i data-lucide="upload-cloud"></i> Ingesta de Datos en Lote</h3>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Simula la actualización masiva de los nodos geográficos nacionales.</p>
-                <div class="drop-zone" onclick="simularCargaCSV()">
-                    <i data-lucide="shield-alert" class="upload-icon"></i>
-                    <p id="upload-text" style="font-weight: 600; font-size: 0.9rem;">Ejecutar Simulación de Ingesta Masiva Estructurada</p>
-                    <div class="progress-container"><div id="upload-progress-bar" class="progress-bar"></div></div>
+        <section id="radar-territorial" class="view">
+            <header>
+                <h1><i class="fa-solid fa-earth-americas"></i> Geo-Radar de Afectación Nacional</h1>
+            </header>
+            <div class="radar-layout">
+                <div class="radar-sidebar">
+                    <h3 class="panel-label">Filtro de Subsistema</h3>
+                    <div class="agent-controls">
+                        <button class="agent-btn active" data-agent="co2" style="--btn-color: var(--neon-green);">
+                            <i class="fa-solid fa-cloud"></i> CARB-X
+                        </button>
+                        <button class="agent-btn" data-agent="luz" style="--btn-color: var(--neon-yellow);">
+                            <i class="fa-solid fa-lightbulb"></i> LUX-NET
+                        </button>
+                        <button class="agent-btn" data-agent="ruido" style="--btn-color: var(--neon-purple);">
+                            <i class="fa-solid fa-volume-high"></i> SONAR-IND
+                        </button>
+                        <button class="agent-btn" data-agent="bio" style="--btn-color: var(--neon-red);">
+                            <i class="fa-solid fa-dna"></i> THERMO-GEN
+                        </button>
+                    </div>
+                    <div class="impact-stats">
+                        <h4 class="stat-title">Impacto Territorial (%)</h4>
+                        <div style="height: 180px;"><canvas id="impact-chart"></canvas></div>
+                    </div>
+                </div>
+                <div class="map-container neon-border-green" id="map-wrapper">
+                    <div id="chile-map"></div>
                 </div>
             </div>
         </section>
 
-        <section id="view-settings" style="display: none;">
-            <div class="card">
-                <h3 class="chart-title" style="margin-bottom: 1.5rem;"><i data-lucide="sliders"></i> Parámetros Críticos Globales</h3>
-                <div class="settings-form">
-                    <div class="form-group">
-                        <label style="font-size: 0.8rem; color:var(--text-muted); display:block; margin-bottom:0.5rem;">Umbral de Alerta Física Máxima (Unidades)</label>
-                        <input type="range" min="500" max="5000" value="4000" class="input-range">
-                    </div>
+        <section id="registros" class="view">
+            <header class="table-header">
+                <h1><i class="fa-solid fa-microchip"></i> Datacenter: Protocolos de Registro</h1>
+                <div class="export-actions">
+                    <button id="btn-pdf" class="export-btn pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button id="btn-excel" class="export-btn excel"><i class="fa-solid fa-file-excel"></i> EXCEL</button>
                 </div>
+            </header>
+            <div class="table-card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>[ TIMESTAMP ]</th>
+                            <th>SUBSISTEMA</th>
+                            <th>LECTURA</th>
+                            <th>SECTOR</th>
+                            <th>ESTADO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
             </div>
         </section>
+
     </main>
 
-    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="./js/main.js"></script>
 </body>
 </html>
