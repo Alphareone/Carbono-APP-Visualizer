@@ -3,35 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA MAEDIS - Protocolo de Monitoreo Ambiental</title>
+    <title>MAEDIS v2.0 - Panel de Monitoreo Dimensional</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
+
+    <div id="boot-screen" class="system-overlay">
+        <div class="boot-content">
+            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> MAEDIS // OS v2.0</h1>
+            <div id="boot-terminal" class="boot-text"></div>
+            <div class="blinking-cursor"></div>
+        </div>
+    </div>
+
+    <div id="shutdown-screen" class="system-overlay hidden">
+        <h1 class="shutdown-text">SISTEMA DESCONECTADO</h1>
+        <p class="shutdown-subtext">Cerrando conexión segura y apagando subsistemas...</p>
+    </div>
+
     <canvas id="particle-canvas"></canvas>
 
     <nav class="sidebar">
-        <div class="logo">
-            <i class="fa-solid fa-microchip" style="color: var(--neon-green);"></i> MAEDIS v2.0
+        <div class="sidebar-header">
+            <div class="logo"><i class="fa-solid fa-satellite-dish" style="color: var(--neon-green);"></i> MAEDIS</div>
         </div>
-        <div class="nav-item active" data-target="dashboard">
-            <i class="fa-solid fa-chart-column"></i> Panel de Control
+        <div class="nav-menu">
+            <div class="nav-item active" data-target="dashboard">
+                <i class="fa-solid fa-chart-column"></i> <span class="nav-text">Panel de Control</span>
+            </div>
+            <div class="nav-item" data-target="radar-territorial">
+                <i class="fa-solid fa-earth-americas"></i> <span class="nav-text">Radar Geo-Espacial</span>
+            </div>
+            <div class="nav-item" data-target="registros">
+                <i class="fa-solid fa-terminal"></i> <span class="nav-text">Terminal de Datos</span>
+            </div>
         </div>
-        <div class="nav-item" data-target="radar-territorial">
-            <i class="fa-solid fa-satellite-dish"></i> Radar Territorial
-        </div>
-        <div class="nav-item" data-target="registros">
-            <i class="fa-solid fa-terminal"></i> Terminal de Datos
-        </div>
-        <div class="nav-item" style="margin-top: auto; color: #ff4757;" id="btn-salir">
-            <i class="fa-solid fa-power-off"></i> Desconectar
+        <div class="logout-btn" id="btn-salir">
+            <i class="fa-solid fa-power-off"></i> <span class="nav-text">Desconectar</span>
         </div>
     </nav>
 
@@ -39,81 +54,82 @@
         
         <section id="dashboard" class="view active">
             <header>
-                <h1><i class="fa-solid fa-network-wired"></i> Subsistemas de Monitoreo Crítico</h1>
+                <h1><i class="fa-solid fa-network-wired"></i> Subsistemas Tácticos</h1>
             </header>
             
             <div class="tabs">
-                <button class="tab-btn active" data-tab="carbx"><span>■</span> CARB-X</button>
-                <button class="tab-btn" data-tab="luxnet"><span>■</span> LUX-NET</button>
-                <button class="tab-btn" data-tab="sonarind"><span>■</span> SONAR-IND</button>
-                <button class="tab-btn" data-tab="thermogen"><span>■</span> THERMO-GEN</button>
+                <button class="tab-btn active" data-tab="carbx"><span style="color:var(--neon-green)">■</span> CARB-X</button>
+                <button class="tab-btn" data-tab="luxnet"><span style="color:var(--neon-yellow)">■</span> LUX-NET</button>
+                <button class="tab-btn" data-tab="sonarind"><span style="color:var(--neon-purple)">■</span> SONAR-IND</button>
+                <button class="tab-btn" data-tab="thermogen"><span style="color:var(--neon-red)">■</span> THERMO-GEN</button>
             </div>
 
             <div id="carbx" class="tab-content active">
                 <div class="charts-grid">
-                    <div class="chart-card neon-border-green"><canvas id="carbx-line"></canvas></div>
-                    <div class="chart-card neon-border-green"><canvas id="carbx-bar"></canvas></div>
-                    <div class="chart-card neon-border-green"><canvas id="carbx-radar"></canvas></div>
-                    <div class="chart-card neon-border-green"><canvas id="carbx-polar"></canvas></div>
+                    <div class="chart-container neon-border-green"><canvas id="carbx-line"></canvas></div>
+                    <div class="chart-container neon-border-green"><canvas id="carbx-bar"></canvas></div>
+                    <div class="chart-container neon-border-green"><canvas id="carbx-radar"></canvas></div>
+                    <div class="chart-container neon-border-green"><canvas id="carbx-polar"></canvas></div>
                 </div>
             </div>
 
             <div id="luxnet" class="tab-content">
                 <div class="charts-grid">
-                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-line"></canvas></div>
-                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-bar"></canvas></div>
-                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-doughnut"></canvas></div>
-                    <div class="chart-card neon-border-yellow"><canvas id="luxnet-bubble"></canvas></div>
+                    <div class="chart-container neon-border-yellow"><canvas id="luxnet-line"></canvas></div>
+                    <div class="chart-container neon-border-yellow"><canvas id="luxnet-bar"></canvas></div>
+                    <div class="chart-container neon-border-yellow"><canvas id="luxnet-doughnut"></canvas></div>
+                    <div class="chart-container neon-border-yellow"><canvas id="luxnet-bubble"></canvas></div>
                 </div>
             </div>
 
             <div id="sonarind" class="tab-content">
                 <div class="charts-grid">
-                    <div class="chart-card neon-border-purple"><canvas id="sonarind-line"></canvas></div>
-                    <div class="chart-card neon-border-purple"><canvas id="sonarind-bar"></canvas></div>
-                    <div class="chart-card neon-border-purple"><canvas id="sonarind-radar"></canvas></div>
-                    <div class="chart-card neon-border-purple"><canvas id="sonarind-doughnut"></canvas></div>
+                    <div class="chart-container neon-border-purple"><canvas id="sonarind-line"></canvas></div>
+                    <div class="chart-container neon-border-purple"><canvas id="sonarind-bar"></canvas></div>
+                    <div class="chart-container neon-border-purple"><canvas id="sonarind-radar"></canvas></div>
+                    <div class="chart-container neon-border-purple"><canvas id="sonarind-doughnut"></canvas></div>
                 </div>
             </div>
 
             <div id="thermogen" class="tab-content">
                 <div class="charts-grid">
-                    <div class="chart-card neon-border-red"><canvas id="thermogen-line"></canvas></div>
-                    <div class="chart-card neon-border-red"><canvas id="thermogen-bar"></canvas></div>
-                    <div class="chart-card neon-border-red"><canvas id="thermogen-polar"></canvas></div>
-                    <div class="chart-card neon-border-red"><canvas id="thermogen-radar"></canvas></div>
+                    <div class="chart-container neon-border-red"><canvas id="thermogen-line"></canvas></div>
+                    <div class="chart-container neon-border-red"><canvas id="thermogen-bar"></canvas></div>
+                    <div class="chart-container neon-border-red"><canvas id="thermogen-polar"></canvas></div>
+                    <div class="chart-container neon-border-red"><canvas id="thermogen-radar"></canvas></div>
                 </div>
             </div>
+
             <div class="system-glossary">
-            <h3><i class="fa-solid fa-book-journal-whills"></i> Directorio de Nomenclatura Oficial</h3>
-            <div class="glossary-grid">
-                <div class="glossary-card border-green">
-                    <h4>CARB-X</h4>
-                    <p><strong>Análisis de Dispersión de CO2.</strong> Monitoreo continuo de gases de efecto invernadero, huella de carbono industrial y calidad del aire en zonas saturadas.</p>
-                </div>
-                <div class="glossary-card border-yellow">
-                    <h4>LUX-NET</h4>
-                    <p><strong>Monitoreo de Fotocontaminación.</strong> Rastreo de saturación lumínica y contaminación visual espectral en cuadrículas urbanas y zonas protegidas.</p>
-                </div>
-                <div class="glossary-card border-purple">
-                    <h4>SONAR-IND</h4>
-                    <p><strong>Simulador de Presión Sonora.</strong> Medición de decibelios y fricción mecánica para evaluar el impacto acústico de fuentes industriales, aeropuertos y autopistas.</p>
-                </div>
-                <div class="glossary-card border-red">
-                    <h4>THERMO-GEN</h4>
-                    <p><strong>Rastreador de Alteraciones Bioquímicas.</strong> Análisis térmico y detección de emisiones de biogás (CH4, H2S) provenientes de lixiviados y vertederos.</p>
+                <h3><i class="fa-solid fa-book-journal-whills"></i> Directorio de Nomenclatura Oficial</h3>
+                <div class="glossary-grid">
+                    <div class="glossary-card border-green">
+                        <h4>CARB-X</h4>
+                        <p><strong>Análisis de Dispersión de CO2.</strong> Monitoreo continuo de gases de efecto invernadero y calidad del aire en zonas saturadas.</p>
+                    </div>
+                    <div class="glossary-card border-yellow">
+                        <h4>LUX-NET</h4>
+                        <p><strong>Monitoreo de Fotocontaminación.</strong> Rastreo de saturación lumínica espectral en cuadrículas urbanas y protegidas.</p>
+                    </div>
+                    <div class="glossary-card border-purple">
+                        <h4>SONAR-IND</h4>
+                        <p><strong>Simulador de Presión Sonora.</strong> Medición de dB y fricción mecánica para evaluar impacto acústico industrial.</p>
+                    </div>
+                    <div class="glossary-card border-red">
+                        <h4>THERMO-GEN</h4>
+                        <p><strong>Rastreador Bioquímico.</strong> Análisis térmico y detección de biogás proveniente de inestabilidad subterránea.</p>
+                    </div>
                 </div>
             </div>
-        </div>
         </section>
 
         <section id="radar-territorial" class="view">
             <header>
-                <h1><i class="fa-solid fa-earth-americas"></i> Geo-Radar de Afectación Nacional</h1>
+                <h1><i class="fa-solid fa-satellite"></i> Radar Geo-Espacial de Impacto</h1>
             </header>
             <div class="radar-layout">
                 <div class="radar-sidebar">
-                    <h3 class="panel-label">Filtro de Subsistema</h3>
+                    <h3 class="panel-label">Filtro Espectral</h3>
                     <div class="agent-controls">
                         <button class="agent-btn active" data-agent="co2" style="--btn-color: var(--neon-green);">
                             <i class="fa-solid fa-cloud"></i> CARB-X
@@ -129,7 +145,7 @@
                         </button>
                     </div>
                     <div class="impact-stats">
-                        <h4 class="stat-title">Impacto Territorial (%)</h4>
+                        <h4 class="stat-title">Impacto Crítico (%)</h4>
                         <div style="height: 180px;"><canvas id="impact-chart"></canvas></div>
                     </div>
                 </div>
@@ -141,25 +157,27 @@
 
         <section id="registros" class="view">
             <header class="table-header">
-                <h1><i class="fa-solid fa-microchip"></i> Datacenter: Protocolos de Registro</h1>
-                <div class="export-actions">
-                    <button id="btn-pdf" class="export-btn pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button id="btn-excel" class="export-btn excel"><i class="fa-solid fa-file-excel"></i> EXCEL</button>
+                <h1><i class="fa-solid fa-server"></i> Datacenter: Historial Cifrado</h1>
+                <div class="export-controls">
+                    <button id="btn-pdf" class="export-btn pdf"><i class="fa-solid fa-file-pdf"></i> PDF Oficial</button>
+                    <button id="btn-excel" class="export-btn excel"><i class="fa-solid fa-file-excel"></i> XLSX Global</button>
                 </div>
             </header>
-            <div class="table-card">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>[ TIMESTAMP ]</th>
-                            <th>SUBSISTEMA</th>
-                            <th>LECTURA</th>
-                            <th>SECTOR</th>
-                            <th>ESTADO</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
+            <div class="system-terminal">
+                <div class="terminal-body">
+                    <table class="terminal-table">
+                        <thead>
+                            <tr>
+                                <th>[ TIMESTAMP ]</th>
+                                <th>SUBSISTEMA</th>
+                                <th>LECTURA</th>
+                                <th>SECTOR</th>
+                                <th>ESTADO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -170,7 +188,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
+    
     <script src="./js/main.js"></script>
 </body>
 </html>
