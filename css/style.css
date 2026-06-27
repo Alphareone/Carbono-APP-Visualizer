@@ -1,16 +1,17 @@
 /* =========================================
-   1. VARIABLES Y RESET
+   1. VARIABLES GLOBALES Y RESET
    ========================================= */
 :root {
-    --bg-dark: #060608;
-    --sidebar-bg: rgba(10, 11, 14, 0.9);
+    --bg-dark: #050508;
+    --sidebar-bg: rgba(10, 11, 14, 0.95);
     --text-main: #e2e8f0;
     --text-muted: #64748b;
+    
+    /* Colores Neón MAEDIS */
     --neon-green: #00e676;
     --neon-yellow: #ffea00;
     --neon-purple: #d500f9;
     --neon-red: #ff3d00;
-    --glass-bg: linear-gradient(145deg, rgba(15, 15, 20, 0.7) 0%, rgba(5, 5, 8, 0.85) 100%);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,13 +19,13 @@
 body {
     background-color: var(--bg-dark);
     color: var(--text-main);
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-/* Fondo de Partículas */
+/* Partículas de Fondo */
 #particle-canvas {
     position: fixed;
     top: 0; left: 0;
@@ -34,25 +35,35 @@ body {
 }
 
 /* =========================================
-   2. SIDEBAR
+   2. SIDEBAR Y NAVEGACIÓN
    ========================================= */
 .sidebar {
-    width: 280px;
+    width: 260px;
     background-color: var(--sidebar-bg);
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
+    z-index: 100;
     backdrop-filter: blur(10px);
+}
+
+.sidebar-header {
+    padding: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
-    padding: 0 25px 30px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
 }
 
 .nav-item {
@@ -61,49 +72,70 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
-    transition: 0.3s;
-    font-weight: 600;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
 }
+
+.nav-item i { font-size: 18px; }
 
 .nav-item:hover, .nav-item.active {
     background: rgba(255, 255, 255, 0.05);
     color: white;
-    border-left: 4px solid var(--neon-green);
+    border-left-color: var(--neon-green);
 }
 
+.logout-btn {
+    margin-top: auto;
+    padding: 20px 25px;
+    color: #ff4757;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.logout-btn:hover { background: rgba(255, 71, 87, 0.1); }
+
 /* =========================================
-   3. MAIN CONTENT
+   3. CONTENEDOR PRINCIPAL
    ========================================= */
 .main-content {
     flex: 1;
-    padding: 30px;
+    padding: 25px 30px;
     overflow-y: auto;
-    background: rgba(0,0,0,0.2);
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 header h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 22px;
-    margin-bottom: 25px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    font-size: 20px;
     color: #fff;
+    letter-spacing: 1.5px;
 }
 
 .view { display: none; }
-.view.active { display: block; animation: fadeIn 0.5s ease forwards; }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.view.active { display: block; animation: fadeIn 0.4s ease forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* =========================================
-   4. DASHBOARD & TABS
+   4. PESTAÑAS (TABS)
    ========================================= */
 .tabs {
     display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 10px;
+    margin-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -112,10 +144,10 @@ header h1 {
     border: none;
     color: var(--text-muted);
     font-family: 'Orbitron', sans-serif;
-    padding: 12px 20px;
+    padding: 12px 25px;
     cursor: pointer;
     transition: 0.3s;
-    font-size: 12px;
+    font-size: 13px;
     letter-spacing: 1px;
 }
 
@@ -124,48 +156,102 @@ header h1 {
     border-bottom: 2px solid #fff;
 }
 
-.tab-btn[data-tab="carbx"] span { color: var(--neon-green); }
-.tab-btn[data-tab="luxnet"] span { color: var(--neon-yellow); }
-.tab-btn[data-tab="sonarind"] span { color: var(--neon-purple); }
-.tab-btn[data-tab="thermogen"] span { color: var(--neon-red); }
-
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
+/* =========================================
+   5. GRÁFICOS Y PANELES (UI TÁCTICO)
+   ========================================= */
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+    gap: 20px;
 }
 
-.chart-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    border-radius: 12px;
+.chart-container {
+    background: rgba(10, 11, 14, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
     padding: 20px;
-    height: 330px;
+    min-height: 280px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.neon-border-green { border-color: rgba(0, 230, 118, 0.3); }
+.neon-border-yellow { border-color: rgba(255, 234, 0, 0.3); }
+.neon-border-purple { border-color: rgba(213, 0, 249, 0.3); }
+.neon-border-red { border-color: rgba(255, 61, 0, 0.3); }
+
+/* =========================================
+   6. TERMINAL DE DATOS (TABLA)
+   ========================================= */
+.system-terminal {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.terminal-body {
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+.terminal-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.terminal-table th {
+    background: rgba(255,255,255,0.05);
+    padding: 15px 20px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    position: sticky; top: 0; z-index: 10;
+}
+
+.terminal-table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+}
+
+.export-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.export-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-.neon-border-green { border: 1px solid rgba(0, 230, 118, 0.3); box-shadow: 0 0 20px rgba(0, 230, 118, 0.1); }
-.neon-border-yellow { border: 1px solid rgba(255, 234, 0, 0.3); box-shadow: 0 0 20px rgba(255, 234, 0, 0.1); }
-.neon-border-purple { border: 1px solid rgba(213, 0, 249, 0.3); box-shadow: 0 0 20px rgba(213, 0, 249, 0.1); }
-.neon-border-red { border: 1px solid rgba(255, 61, 0, 0.3); box-shadow: 0 0 20px rgba(255, 61, 0, 0.1); }
+.export-btn.pdf { background: var(--neon-red); color: #fff; }
+.export-btn.excel { background: var(--neon-green); color: #000; }
+.export-btn:hover { filter: brightness(1.2); }
 
 /* =========================================
-   5. RADAR & MAP
+   7. RADAR TERRITORIAL
    ========================================= */
 .radar-layout {
     display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 30px;
-    height: calc(100vh - 160px);
+    grid-template-columns: 320px 1fr;
+    gap: 25px;
+    height: calc(100vh - 140px);
 }
 
 .radar-sidebar {
-    background: var(--glass-bg);
-    border-radius: 12px;
-    padding: 25px;
+    background: rgba(10, 11, 14, 0.85);
+    border-radius: 8px;
+    padding: 20px;
     border: 1px solid rgba(255,255,255,0.05);
     display: flex;
     flex-direction: column;
@@ -174,8 +260,8 @@ header h1 {
 .agent-btn {
     width: 100%;
     padding: 15px;
-    margin-bottom: 15px;
-    background: rgba(0,0,0,0.3);
+    margin-bottom: 12px;
+    background: rgba(0,0,0,0.4);
     border: 1px solid rgba(255,255,255,0.1);
     color: #fff;
     font-family: 'Orbitron', sans-serif;
@@ -185,68 +271,30 @@ header h1 {
     display: flex;
     align-items: center;
     gap: 15px;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: 0.3s;
 }
 
 .agent-btn.active {
     border-color: var(--btn-color);
-    box-shadow: 0 0 15px var(--btn-color), inset 0 0 10px var(--btn-color);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px var(--btn-color);
 }
 
 .map-container {
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
     position: relative;
+    border: 1px solid;
 }
 
-#chile-map { width: 100%; height: 100%; z-index: 10; }
-
-/* =========================================
-   6. TABLE
-   ========================================= */
-.table-card {
-    background: var(--glass-bg);
-    border-radius: 12px;
-    height: calc(100vh - 180px);
-    overflow-y: auto;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.data-table { width: 100%; border-collapse: collapse; text-align: left; }
-.data-table th {
-    background: rgba(255,255,255,0.05);
-    padding: 15px 20px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    color: var(--text-muted);
-    position: sticky; top: 0; z-index: 20;
-}
-.data-table td {
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
-    font-family: monospace;
-    font-size: 14px;
-}
-
-.export-btn {
-    padding: 8px 18px;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Orbitron', sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    margin-left: 10px;
-}
-.export-btn.pdf { background: var(--neon-red); color: #fff; }
-.export-btn.excel { background: var(--neon-green); color: #000; }
+#chile-map { width: 100%; height: 100%; z-index: 10; background: #000; }
 
 /* =========================================
-   7. GLOSARIO DE SISTEMA (DIRECTORIO)
+   8. GLOSARIO DE SISTEMA
    ========================================= */
 .system-glossary {
-    margin-top: 40px;
-    padding-top: 25px;
+    margin-top: 30px;
+    padding-top: 20px;
     border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
@@ -254,246 +302,137 @@ header h1 {
     font-family: 'Orbitron', sans-serif;
     font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
 }
 
 .glossary-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    gap: 15px;
 }
 
 .glossary-card {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 18px;
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 6px;
     border-left: 3px solid #333;
-    transition: 0.3s ease;
-}
-
-.glossary-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
 }
 
 .glossary-card h4 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 15px;
-    margin-bottom: 8px;
+    font-size: 14px;
+    margin-bottom: 5px;
     color: #fff;
-    letter-spacing: 1px;
 }
 
 .glossary-card p {
-    font-size: 12px;
+    font-size: 11.5px;
     color: var(--text-muted);
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
-.glossary-card p strong {
-    color: var(--text-main);
-}
-
-/* Bordes sincronizados con los colores de MAEDIS */
 .border-green { border-left-color: var(--neon-green); }
 .border-yellow { border-left-color: var(--neon-yellow); }
 .border-purple { border-left-color: var(--neon-purple); }
 .border-red { border-left-color: var(--neon-red); }
 
 /* =========================================
-   9. PROTOCOLOS DE RESPONSIVIDAD OPTIMIZADA (MÓVIL)
+   9. MOTOR DE INMERSIÓN (BOOT & SHUTDOWN)
    ========================================= */
-@media (max-width: 768px) {
-    /* 1. Cambio a estructura vertical */
-    body {
-        flex-direction: column;
-        overflow: hidden;
-    }
+.system-overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: #050508;
+    z-index: 9999;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    color: var(--neon-green);
+    font-family: 'Courier New', Courier, monospace;
+}
 
-    /* 2. Barra de Navegación (Tipo App) */
-    .sidebar {
-        width: 100%;
-        height: 60px;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        padding: 5px 10px;
-        border-right: none;
-        border-bottom: 1px solid var(--neon-green);
-        background: #000;
-        z-index: 1000;
-    }
+.system-overlay.hidden { display: none !important; }
 
-    .sidebar-header {
-        display: none; /* Ocultamos el logo para salvar espacio */
-    }
+.boot-content { width: 80%; max-width: 600px; }
 
-    .nav-menu {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        justify-content: space-evenly;
-        margin: 0;
-    }
+.boot-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem; margin-bottom: 20px;
+    text-shadow: 0 0 15px var(--neon-green);
+}
 
-    .nav-item {
-        padding: 10px;
-        font-size: 0; /* Oculta el texto */
-        border: none;
-    }
+.boot-text p { font-size: 1.1rem; margin: 6px 0; opacity: 0.9; }
+.blinking-cursor { display: inline-block; width: 12px; height: 20px; background-color: var(--neon-green); animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
 
-    .nav-item i {
-        font-size: 22px; /* Iconos más grandes para el toque */
-        margin: 0;
-    }
+.shutdown-text {
+    font-family: 'Orbitron', sans-serif;
+    color: #ff3366; text-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
+    font-size: 3rem; margin-bottom: 10px; text-align: center;
+}
+.shutdown-subtext { color: #a0a0a0; font-size: 1.1rem; }
 
-    .nav-item.active {
-        background: transparent;
-        border-bottom: 3px solid var(--neon-green);
-        color: var(--neon-green);
-    }
-
-    .logout-btn {
-        margin: 0;
-        padding: 10px;
-        font-size: 0;
-    }
-
-    .logout-btn i {
-        font-size: 22px;
-        margin: 0;
-    }
-
-    /* 3. Área de Contenido Principal */
-    .main-content {
-        width: 100%;
-        height: calc(100vh - 60px);
-        padding: 15px 10px;
-        overflow-y: auto;
-    }
-
-    /* 4. Botonera de Módulos (Grid 2x2 perfecto) */
-    .tabs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin-bottom: 15px;
-    }
-
-    .tab-btn {
-        margin: 0;
-        padding: 12px 5px;
-        font-size: 11px;
-        text-align: center;
-    }
-
-    /* 5. Gráficos 100% legibles (1 columna) */
+/* =========================================
+   10. MEDIA QUERIES (DESKTOP TÁCTICO)
+   ========================================= */
+@media (min-width: 992px) {
     .charts-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, minmax(280px, 1fr));
     }
-
+    
     .chart-container {
-        min-height: 280px; /* Alto ideal para que no se deformen en móvil */
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 4px 10px rgba(0, 0, 0, 0.5);
     }
 
-    /* 6. Protección de la Terminal de Datos */
-    .terminal-body {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
-    }
-
-    .terminal-table {
-        min-width: 550px; /* Evita que las columnas colapsen */
-    }
-
-    .export-controls {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .export-controls button {
-        width: 100%;
-        padding: 12px; /* Botones más altos para tocarlos fácilmente */
+    .chart-container::before {
+        content: ''; position: absolute; top: -1px; left: -1px;
+        width: 15px; height: 15px;
+        border-top: 2px solid rgba(255,255,255,0.3);
+        border-left: 2px solid rgba(255,255,255,0.3);
     }
 }
 
 /* =========================================
-   10. DISTRIBUCIÓN DE PANEL TÁCTICO (DESKTOP)
+   11. MEDIA QUERIES (MÓVIL APP)
    ========================================= */
-@media (min-width: 992px) {
-    /* 1. Contenedor Maestro */
-    .main-content {
-        padding: 30px 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 25px; /* Separación exacta entre los bloques principales */
-        height: 100vh;
-        overflow-y: auto;
-    }
+@media (max-width: 768px) {
+    body { flex-direction: column; overflow: hidden; }
 
-    /* 2. Cuadrícula de Gráficos (Grid 2x2 Perfecto) */
-    .charts-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas idénticas */
-        grid-template-rows: repeat(2, minmax(280px, 1fr)); /* Dos filas de alto fijo/flexible */
-        gap: 25px;
-        width: 100%;
+    .sidebar {
+        width: 100%; height: 60px;
+        flex-direction: row; justify-content: space-around;
+        padding: 5px 10px; border-right: none;
+        border-bottom: 1px solid var(--neon-green);
     }
-
-    /* 3. Estilo de los "Paneles de Cristal" (Chart Containers) */
-    .chart-container {
-        background: rgba(10, 11, 14, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 8px;
-        padding: 20px;
-        /* Sombra interna para dar profundidad de "monitor empotrado" */
-        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 4px 10px rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        position: relative;
-    }
-
-    /* Pequeño acento visual en las esquinas de los gráficos */
-    .chart-container::before {
-        content: '';
-        position: absolute;
-        top: -1px; left: -1px;
-        width: 15px; height: 15px;
-        border-top: 2px solid var(--neon-green);
-        border-left: 2px solid var(--neon-green);
-        opacity: 0.5;
-    }
-
-    /* 4. Terminal de Datos en la Base */
-    .system-terminal {
-        margin-top: 10px;
-        border-radius: 8px;
-        background: rgba(0, 0, 0, 0.7);
-        border: 1px solid rgba(0, 230, 118, 0.2);
-        box-shadow: 0 0 20px rgba(0, 230, 118, 0.05);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Controlamos la altura de la terminal para que no empuje el resto de la interfaz fuera de la pantalla */
-    .terminal-body {
-        max-height: 220px; 
-        overflow-y: auto;
-    }
-
-    /* 5. Glosario de Nomenclatura (Directorios) */
-    .system-glossary {
-        margin-top: 0;
-        padding-top: 25px;
-        border-top: 1px dashed rgba(255, 255, 255, 0.1);
-    }
+    .sidebar-header { display: none; }
     
-    .glossary-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 tarjetas en línea en desktop */
-        gap: 15px;
-    }
+    .nav-menu { flex-direction: row; width: 100%; justify-content: space-evenly; margin: 0; }
+    .nav-item { padding: 10px; border: none; }
+    .nav-item i { font-size: 22px; margin: 0; }
+    .nav-item .nav-text { display: none; }
+    .nav-item.active { border-bottom: 3px solid var(--neon-green); }
+
+    .logout-btn { padding: 10px; margin: 0; border: none; }
+    .logout-btn i { font-size: 22px; margin: 0; }
+    .logout-btn .nav-text { display: none; }
+
+    .main-content { height: calc(100vh - 60px); padding: 15px 10px; }
+    
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+    .tab-btn { padding: 12px 5px; font-size: 11px; }
+
+    .charts-grid { grid-template-columns: 1fr; }
+    
+    .radar-layout { grid-template-columns: 1fr; height: auto; }
+    .map-container { height: 400px; }
+
+    .terminal-body { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .terminal-table { min-width: 600px; }
+    
+    .export-controls { flex-direction: column; }
+    .export-controls button { width: 100%; padding: 12px; }
+    
+    header h1 { font-size: 16px; }
+    .shutdown-text { font-size: 2rem; }
 }
