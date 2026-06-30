@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    /* =========================================
+/* =========================================
        0. MOTOR DE INMERSIÓN: BOOT Y SHUTDOWN
        ========================================= */
     const bootScreen = document.getElementById('boot-screen');
@@ -40,23 +40,26 @@ document.addEventListener("DOMContentLoaded", () => {
     simulateBoot(); // Inicia la secuencia al cargar
 
     if(logoutBtn && shutdownScreen) {
-        logoutBtn.addEventListener('click', () => {
+        logoutBtn.addEventListener('click', (e) => {
             if(confirm("¿Autoriza la desconexión del servidor central?")) {
+                // Mostrar pantalla de apagado
                 shutdownScreen.classList.remove('hidden');
                 
-                // Tiempo para que el usuario vea la pantalla de apagado
+                // Detener cualquier procesamiento adicional si es necesario
+                console.log("Sistema MAEDIS: Iniciando secuencia de apagado...");
+                
                 setTimeout(() => {
-                    // Intento de cerrar la ventana
+                    // Intento de cerrar la pestaña
+                    window.open('', '_self', ''); 
                     window.close();
                     
-                    // Si el navegador bloquea el cierre (comportamiento normal),
-                    // redirigimos a una página de "Desconectado" o al inicio
+                    // Si el navegador bloquea el cierre (común en pestañas principales),
+                    // redirigimos a una página en blanco para limpiar la memoria visual
                     window.location.href = "about:blank"; 
-                }, 3000);
+                }, 3000); // 3 segundos de espera para la animación de cierre
             }
         });
     }
-
 
 
     /* =========================================
