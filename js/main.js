@@ -39,14 +39,24 @@ document.addEventListener("DOMContentLoaded", () => {
     
     simulateBoot(); // Inicia la secuencia al cargar
 
-    if(logoutBtn && shutdownScreen) {
-        logoutBtn.addEventListener('click', (e) => {
-            if(confirm("¿Autoriza la desconexión del servidor central?")) {
-                shutdownScreen.classList.remove('hidden');
-                setTimeout(() => { window.location.reload(); }, 3000);
-            }
-        });
-    }
+if(logoutBtn && shutdownScreen) {
+    logoutBtn.addEventListener('click', () => {
+        if(confirm("¿Autoriza la desconexión del servidor central?")) {
+            shutdownScreen.classList.remove('hidden');
+            
+            // Tiempo para que el usuario vea la pantalla de apagado
+            setTimeout(() => {
+                // Intento de cerrar la ventana
+                window.close();
+                
+                // Si el navegador bloquea el cierre (comportamiento normal),
+                // redirigimos a una página de "Desconectado" o al inicio
+                window.location.href = "about:blank"; 
+            }, 3000);
+        }
+    });
+}
+
 
     /* =========================================
        1. MOTOR DE PARTÍCULAS (FONDO)
