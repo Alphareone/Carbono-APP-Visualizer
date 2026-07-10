@@ -1,4 +1,4 @@
-# 🌐 Carbono-APP-Visualizer - Panel de Extracción y Monitoreo Dimensional (M.A.E.D.I.S)
+# 🌐 Carbono-APP-Visualizer - Monitoreo Analítico de Entornos Dimensionales con Inyección Simulada (M.A.E.D.I.S)
 ### *Suite Analítica Ambiental e Instrumentación Avanzada*
 
 > **M.A.E.D.I.S = Monitoreo Analítico de Entornos Dimensionales con Inyección Simulada**  
