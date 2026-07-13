@@ -1,438 +1,166 @@
-/* =========================================
-   1. VARIABLES GLOBALES Y RESET
-   ========================================= */
+/* ========================================================
+   1. VARIABLES GLOBALES, RESET Y SELECTORES DE TEMA (v3.0)
+   ======================================================== */
 :root {
     --bg-dark: #050508;
     --sidebar-bg: rgba(10, 11, 14, 0.95);
+    --card-bg: rgba(10, 11, 14, 0.5);
+    --border-color: rgba(255, 255, 255, 0.03);
     --text-main: #e2e8f0;
     --text-muted: #64748b;
-    
-    /* Colores Neón MAEDIS */
     --neon-green: #00e676;
     --neon-yellow: #ffea00;
     --neon-purple: #d500f9;
     --neon-red: #ff3d00;
 }
 
+[data-theme="light"] {
+    --bg-dark: #f1f5f9;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #cbd5e1;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    /* Variantes Pastel Suaves */
+    --neon-green: #2e7d32;
+    --neon-yellow: #fbc02d;
+    --neon-purple: #9c27b0;
+    --neon-red: #c62828;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
+body { background-color: var(--bg-dark); color: var(--text-main); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; transition: background 0.25s, color 0.25s; }
+#particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-}
+/* ========================================================
+   2. SIDEBAR E INTERFAZ DE NAVEGACIÓN GENERAL
+   ======================================================== */
+.sidebar { width: 220px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 15px; z-index: 100; transition: background 0.25s; }
+.sidebar-header { margin-bottom: 20px; }
+.sidebar-logo { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--neon-green); text-shadow: 0 0 8px rgba(0,230,118,0.2); }
+.nav-menu { display: flex; flex-direction: column; gap: 5px; flex-grow: 1; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 10px; color: var(--text-muted); cursor: pointer; border-radius: 4px; transition: 0.2s; }
+.nav-item i { font-size: 14px; width: 18px; text-align: center; }
+.nav-item .nav-text { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; }
+.nav-item.active { color: var(--neon-green); background: rgba(0,230,118,0.05); border-left: 2px solid var(--neon-green); }
+.logout-btn { display: flex; align-items: center; gap: 12px; padding: 10px; color: var(--neon-red); background: none; border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; margin-top: auto; text-align: left; }
 
-/* Partículas de Fondo */
-#particle-canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: -1;
-    pointer-events: none;
-}
+.main-content { flex-grow: 1; padding: 20px; overflow-y: auto; position: relative; }
+.view { display: none; } .view.active { display: block; }
 
-/* =========================================
-   2. SIDEBAR Y NAVEGACIÓN
-   ========================================= */
-.sidebar {
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    backdrop-filter: blur(10px);
-}
+/* Sub-Pestañas Dashboard */
+.tabs { display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; overflow-x: auto; }
+.tab-btn { background: none; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 14px; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; cursor: pointer; border-radius: 4px; white-space: nowrap; transition: 0.2s; }
+.tab-btn.active { color: var(--text-main); border-color: var(--text-main); background: rgba(255,255,255,0.03); }
+.tab-content { display: none; } .tab-content.active { display: block; }
 
-.sidebar-header {
-    padding: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+/* ========================================================
+   3. ARQUITECTURA DE CONTENEDORES Y GRÁFICOS
+   ======================================================== */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+.line-chart-container { grid-column: span 2; }
+.chart-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; height: 260px; backdrop-filter: blur(8px); transition: background 0.25s, border 0.25s; }
+.card-header { margin-bottom: 8px; } 
+.card-title { font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+.chart-wrapper { flex-grow: 1; position: relative; width: 100%; height: 100%; }
 
-.logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff;
-    letter-spacing: 1px;
-}
+/* Bordes Adaptativos Neón/Pastel */
+.neon-border-green { border-top: 2px solid var(--neon-green); }
+.neon-border-yellow { border-top: 2px solid var(--neon-yellow); }
+.neon-border-purple { border-top: 2px solid var(--neon-purple); }
+.neon-border-red { border-top: 2px solid var(--neon-red); }
 
-.nav-menu {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-}
+/* ========================================================
+   4. DETALLES DE VISTA: RADAR Y AUDITORÍA
+   ======================================================= */
+.radar-layout { display: grid; grid-template-columns: 1fr 260px; gap: 15px; height: calc(100vh - 90px); }
+.map-container { background: #050508; border-radius: 6px; overflow: hidden; height: 100%; min-height: 250px; }
+#chile-map { width: 100%; height: 100%; z-index: 10; }
+.radar-controls { height: 100%; overflow-y: auto; }
+.btn-agent-grid { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+.agent-btn { background: var(--bg-dark); color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px; font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; text-align: left; cursor: pointer; border-radius: 4px; width: 100%; transition: 0.2s; }
+[data-theme="light"] .agent-btn:not(.active) { background: #e2e8f0; color: #475569; }
+.agent-btn.active { color: #ffffff !important; background: var(--neon-green); }
+.agent-btn[data-agent="luz"].active { background: var(--neon-yellow); color: #000000 !important; }
+.agent-btn[data-agent="ruido"].active { background: var(--neon-purple); }
+.agent-btn[data-agent="bio"].active { background: var(--neon-red); }
 
-.nav-item {
-    padding: 18px 25px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-left: 4px solid transparent;
-}
+.radar-pulse-layer { animation: radarPulseEffect 2.5s infinite ease-in-out; transform-origin: center; stroke-dasharray: 4; }
+@keyframes radarPulseEffect { 0%, 100% { fill-opacity: 0.15; stroke-opacity: 0.4; } 50% { fill-opacity: 0.45; stroke-opacity: 1; } }
+.leaflet-container { background-color: #050508 !important; }
+[data-theme="light"] .leaflet-container { background-color: #f1f5f9 !important; }
 
-.nav-item i { font-size: 18px; }
+.view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.view-title { font-family: 'Orbitron', sans-serif; font-size: 14px; }
+.export-btn { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 700; padding: 6px 12px; border: 1px solid transparent; border-radius: 4px; cursor: pointer; background: none; }
+.export-btn.pdf { border-color: var(--neon-red); color: var(--neon-red); }
+.export-btn.excel { border-color: var(--neon-green); color: var(--neon-green); }
 
-.nav-item:hover, .nav-item.active {
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
-    border-left-color: var(--neon-green);
-}
+.system-terminal { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; height: calc(100vh - 140px); display: flex; flex-direction: column; }
+.terminal-body { flex-grow: 1; overflow-y: auto; padding: 12px; font-family: monospace; font-size: 11px; }
+.terminal-table { width: 100%; border-collapse: collapse; }
+.terminal-table th { font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--text-muted); padding: 8px; border-bottom: 1px solid var(--border-color); text-align: left; }
+.terminal-table td { padding: 8px; border-bottom: 1px solid var(--border-color); }
 
-.logout-btn {
-    margin-top: auto;
-    padding: 20px 25px;
-    color: #ff4757;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    font-weight: bold;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    transition: 0.3s;
-}
+/* ========================================================
+   5. PANEL DE CONFIGURACIÓN UNIFICADO (v3.0 NUEVO RECUADRO)
+   ======================================================== */
+.single-config-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 18px; max-width: 600px; margin: 0 auto; transition: background 0.25s, border 0.25s; }
+.config-settings-container { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+.config-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+.config-row:last-child { border-bottom: none; padding-bottom: 0; }
+.config-label { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; display: block; margin-bottom: 2px; }
+.config-desc { font-size: 11px; color: var(--text-muted); }
+.config-ctrl { display: flex; align-items: center; gap: 10px; }
 
-.logout-btn:hover { background: rgba(255, 71, 87, 0.1); }
+/* Interruptor Táctico Integrado */
+.switch-toggle { position: relative; display: inline-block; width: 44px; height: 22px; }
+.switch-toggle input { opacity: 0; width: 0; height: 0; }
+.switch-toggle span { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .25s; border-radius: 22px; }
+.switch-toggle span:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #ffffff; transition: .25s; border-radius: 50%; }
+.switch-toggle input:checked + span { background-color: var(--neon-purple); }
+.switch-toggle input:checked + span:before { transform: translateX(22px); }
+[data-theme="light"] .switch-toggle span { background-color: #cbd5e1; }
+[data-theme="light"] .switch-toggle span:before { background-color: #ffffff; }
 
-/* =========================================
-   3. CONTENEDOR PRINCIPAL
-   ========================================= */
-.main-content {
-    flex: 1;
-    padding: 25px 30px;
-    overflow-y: auto;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
-}
+.custom-select { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; font-family: 'Orbitron', sans-serif; font-size: 11px; outline: none; cursor: pointer; transition: 0.2s; }
+[data-theme="light"] .custom-select option { background: #ffffff; color: #0f172a; }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 20px;
-    color: #fff;
-    letter-spacing: 1.5px;
-}
-
-.view { display: none; }
-.view.active { display: block; animation: fadeIn 0.4s ease forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-/* =========================================
-   4. PESTAÑAS (TABS)
-   ========================================= */
-.tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.tab-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-family: 'Orbitron', sans-serif;
-    padding: 12px 25px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-size: 13px;
-    letter-spacing: 1px;
-}
-
-.tab-btn.active {
-    color: #fff;
-    border-bottom: 2px solid #fff;
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* =========================================
-   5. GRÁFICOS Y PANELES (UI TÁCTICO)
-   ========================================= */
-.charts-grid {
-    display: grid;
-    gap: 20px;
-}
-
-.chart-container {
-    background: rgba(10, 11, 14, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 20px;
-    min-height: 280px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.neon-border-green { border-color: rgba(0, 230, 118, 0.3); }
-.neon-border-yellow { border-color: rgba(255, 234, 0, 0.3); }
-.neon-border-purple { border-color: rgba(213, 0, 249, 0.3); }
-.neon-border-red { border-color: rgba(255, 61, 0, 0.3); }
-
-/* =========================================
-   6. TERMINAL DE DATOS (TABLA)
-   ========================================= */
-.system-terminal {
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.terminal-body {
-    overflow-y: auto;
-    max-height: calc(100vh - 200px);
-}
-
-.terminal-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.terminal-table th {
-    background: rgba(255,255,255,0.05);
-    padding: 15px 20px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    color: var(--text-muted);
-    position: sticky; top: 0; z-index: 10;
-}
-
-.terminal-table td {
-    padding: 12px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-}
-
-.export-controls {
-    display: flex;
-    gap: 10px;
-}
-
-.export-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.export-btn.pdf { background: var(--neon-red); color: #fff; }
-.export-btn.excel { background: var(--neon-green); color: #000; }
-.export-btn:hover { filter: brightness(1.2); }
-
-/* =========================================
-   7. RADAR TERRITORIAL
-   ========================================= */
-.radar-layout {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 25px;
-    height: calc(100vh - 140px);
-}
-
-.radar-sidebar {
-    background: rgba(10, 11, 14, 0.85);
-    border-radius: 8px;
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    flex-direction: column;
-}
-
-.agent-btn {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 12px;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #fff;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-radius: 6px;
-    transition: 0.3s;
-}
-
-.agent-btn.active {
-    border-color: var(--btn-color);
-    box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 10px var(--btn-color);
-}
-
-.map-container {
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid;
-}
-
-#chile-map { width: 100%; height: 100%; z-index: 10; background: #000; }
-
-/* =========================================
-   8. GLOSARIO DE SISTEMA
-   ========================================= */
-.system-glossary {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
-}
-
-.system-glossary h3 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 15px;
-    text-transform: uppercase;
-}
-
-.glossary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.glossary-card {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 15px;
-    border-radius: 6px;
-    border-left: 3px solid #333;
-}
-
-.glossary-card h4 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #fff;
-}
-
-.glossary-card p {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    line-height: 1.5;
-}
-
-.border-green { border-left-color: var(--neon-green); }
-.border-yellow { border-left-color: var(--neon-yellow); }
-.border-purple { border-left-color: var(--neon-purple); }
-.border-red { border-left-color: var(--neon-red); }
-
-/* =========================================
-   9. MOTOR DE INMERSIÓN (BOOT & SHUTDOWN)
-   ========================================= */
-.system-overlay {
-    position: fixed; top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background-color: #050508;
-    z-index: 9999;
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    color: var(--neon-green);
-    font-family: 'Courier New', Courier, monospace;
-}
-
+/* Pantallas del Sistema */
+.system-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050508; display: flex; justify-content: center; align-items: center; z-index: 10000; transition: opacity 0.4s; }
 .system-overlay.hidden { display: none !important; }
+.boot-content { width: 85%; max-width: 400px; }
+.boot-logo { font-family: 'Orbitron', sans-serif; font-size: 16px; color: var(--neon-green); margin-bottom: 12px; }
+.boot-text { font-family: monospace; font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+.blinking-cursor { width: 6px; height: 12px; background: var(--neon-green); animation: blink 0.8s infinite; margin-top: 5px; }
+@keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-.boot-content { width: 80%; max-width: 600px; }
-
-.boot-logo {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 2.2rem; margin-bottom: 20px;
-    text-shadow: 0 0 15px var(--neon-green);
-}
-
-.boot-text p { font-size: 1.1rem; margin: 6px 0; opacity: 0.9; }
-.blinking-cursor { display: inline-block; width: 12px; height: 20px; background-color: var(--neon-green); animation: blink 1s step-end infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-
-.shutdown-text {
-    font-family: 'Orbitron', sans-serif;
-    color: #ff3366; text-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
-    font-size: 3rem; margin-bottom: 10px; text-align: center;
-}
-.shutdown-subtext { color: #a0a0a0; font-size: 1.1rem; }
-
-/* =========================================
-   10. MEDIA QUERIES (DESKTOP TÁCTICO)
-   ========================================= */
-@media (min-width: 992px) {
-    .charts-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, minmax(280px, 1fr));
-    }
-    
-    .chart-container {
-        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 4px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .chart-container::before {
-        content: ''; position: absolute; top: -1px; left: -1px;
-        width: 15px; height: 15px;
-        border-top: 2px solid rgba(255,255,255,0.3);
-        border-left: 2px solid rgba(255,255,255,0.3);
-    }
-}
-
-/* =========================================
-   11. MEDIA QUERIES (MÓVIL APP)
-   ========================================= */
+/* ========================================================
+   6. CONTROL MÓVIL ABSOLUTO RESPONSIVO CRÍTICO
+   ======================================================== */
 @media (max-width: 768px) {
-    body { flex-direction: column; overflow: hidden; }
-
-    .sidebar {
-        width: 100%; height: 60px;
-        flex-direction: row; justify-content: space-around;
-        padding: 5px 10px; border-right: none;
-        border-bottom: 1px solid var(--neon-green);
-    }
+    body { flex-direction: column-reverse; }
+    .sidebar { width: 100%; height: 65px; flex-direction: row; justify-content: space-around; padding: 5px 0; border-right: none; border-top: 1px solid var(--border-color); background: var(--sidebar-bg); position: fixed; bottom: 0; left: 0; }
     .sidebar-header { display: none; }
+    .nav-menu { flex-direction: row; width: 100%; justify-content: space-around; margin: 0; gap: 0; }
+    .nav-item { padding: 6px; flex-direction: column; gap: 2px; justify-content: center; align-items: center; width: 20%; text-align: center; border: none !important; }
+    .nav-item i { font-size: 18px; width: auto; }
+    .nav-item .nav-text { font-size: 9px; display: block; white-space: nowrap; }
+    .nav-item.active { background: rgba(0,230,118,0.02); color: var(--neon-green); box-shadow: inset 0 -3px 0 var(--neon-green); }
+    .logout-btn { padding: 6px; flex-direction: column; gap: 2px; justify-content: center; align-items: center; margin: 0; width: 20%; }
+    .logout-btn .nav-text { font-size: 9px; }
     
-    .nav-menu { flex-direction: row; width: 100%; justify-content: space-evenly; margin: 0; }
-    .nav-item { padding: 10px; border: none; }
-    .nav-item i { font-size: 22px; margin: 0; }
-    .nav-item .nav-text { display: none; }
-    .nav-item.active { border-bottom: 3px solid var(--neon-green); }
-
-    .logout-btn { padding: 10px; margin: 0; border: none; }
-    .logout-btn i { font-size: 22px; margin: 0; }
-    .logout-btn .nav-text { display: none; }
-
-    .main-content { height: calc(100vh - 60px); padding: 15px 10px; }
+    .main-content { height: calc(100vh - 65px); padding: 12px 10px 85px 10px; width: 100%; overflow-x: hidden; }
+    .dashboard-grid { grid-template-columns: 1fr; gap: 12px; }
+    .line-chart-container { grid-column: span 1; }
+    .chart-card { height: 230px; }
     
-    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-    .tab-btn { padding: 12px 5px; font-size: 11px; }
-
-    .charts-grid { grid-template-columns: 1fr; }
+    .radar-layout { grid-template-columns: 1fr; height: auto; gap: 12px; }
+    .map-container { height: 340px; width: 100%; position: relative; display: block; }
+    .radar-controls { height: auto; }
+    .btn-agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     
-    .radar-layout { grid-template-columns: 1fr; height: auto; }
-    .map-container { height: 400px; }
-
-    .terminal-body { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .terminal-table { min-width: 600px; }
-    
-    .export-controls { flex-direction: column; }
-    .export-controls button { width: 100%; padding: 12px; }
-    
-    header h1 { font-size: 16px; }
-    .shutdown-text { font-size: 2rem; }
+    .view-header { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .system-terminal { height: calc(100vh - 200px); }
+    .single-config-card { padding: 12px; }
 }
