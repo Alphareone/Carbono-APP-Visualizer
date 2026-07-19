@@ -26,7 +26,8 @@ Para resolver esto, se rediseñó por completo el núcleo gráfico y estructural
   * **`LUX-NET` (Luminosidad):** Medición analítica de lúmenes y flujos fotónicos.
   * **`SONAR-IND` (Estrés Acústico):** Monitoreo de decibelios (dB).
   * **`THERMO-GEN` (Termografía/Biometría):** Fluctuaciones térmicas subterráneas y telemetría biológica.
-* **Radar Territorial Georreferenciado:** Integración avanzada con *Leaflet.js* y mapas *Dark Matter*. 
+* **Radar Territorial Georreferenciado:** Integración avanzada con *Leaflet.js* y mapas *Dark Matter*. Incluye inyección y renderizado de áreas macrozonales chilenas (Valparaíso, Santiago, Concepción, entre otras).
+  * **Capas de Información Interactiva (Hover):** Implementación de tooltips tácticos dinámicos (`.bindTooltip`) acoplados a las zonas de emisión. Al posicionar el puntero sobre cualquier sector coloreado del mapa, se despliega instantáneamente una etiqueta flotante con el nombre formal de la región/ciudad monitorizada, optimizando la legibilidad cartográfica sin recargar la interfaz visual.
 * **Pipelines de Exportación Corporativa:** Exportación a **Excel (XLSX)** y **PDF Consolidados**.
 * **Arquitectura Fluida Dual con Diseño Táctico (UI/UX):** Adaptación híbrida para Desktop y Mobile.
 
@@ -35,7 +36,7 @@ Para resolver esto, se rediseñó por completo el núcleo gráfico y estructural
 ## 🛠️ Stack Tecnológico
 
 * **Core Estructural:** HTML5 / CSS3 Avanzado  
-* **Logic Core:** Vanilla JavaScript ES6+ (Random Walk inercial para telemetría sintética)  
+* **Logic Core:** Vanilla JavaScript ES6+ (Random Walk inercial para telemetría sintética + Leaflet Tooltip Hooks)  
 * **Graphics Engine:** Chart.js v4.x  
 * **Geolocalización:** Leaflet.js  
 * **Icons:** Lucide Icons  
@@ -53,9 +54,9 @@ Este ecosistema analítico avanzado ha sido conceptualizado, diseñado y desarro
 
 ```text
 ├── css/
-│   └── styles.css       # Layout táctico, CSS Grid, variables de marca, responsive y efectos neón
+│   └── styles.css       # Layout táctico, CSS Grid, variables de marca, responsive y estilos para tooltips cyberpunk
 ├── js/
-│   └── main.js          # Controlador lógico, Historical Cache, Leaflet Map y pipelines de exportación
+│   └── main.js          # Controlador lógico, Historical Cache, Leaflet Map con bindings interactivos y pipelines de exportación
 ├── index.html           # Interfaz estructural renovada y contenedores de la suite analítica M.A.E.D.I.S
 ├── CHANGELOG.md         # Notas de actualización y registro de saltos arquitectónicos del núcleo
 └── README.md            # Documentación técnica general del proyecto
