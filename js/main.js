@@ -141,8 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    /* =========================================
-       5. MAPA LEAFLET Y RADAR DE IMPACTO CON DISPLAY DE PORCENTAJES
+/* =========================================
+       5. MAPA LEAFLET Y RADAR DE IMPACTO CON ENFOQUE FILTRADO (v4.0)
        ========================================= */
     const chileBounds = L.latLngBounds(L.latLng([-56.0, -80.0]), L.latLng([-17.5, -62.0]));
     const map = L.map('chile-map', { zoomControl: false, minZoom: 4, maxZoom: 12, maxBounds: chileBounds, maxBoundsViscosity: 1.0, worldCopyJump: false }).setView([-33.45, -70.66], 5);
@@ -150,6 +150,30 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const dataA = { co2: '#00e676', luz: '#ffea00', ruido: '#d500f9', bio: '#ff3d00' };
     let activeAgent = 'co2';
+
+    // Textos informativos dinámicos según el agente
+    const agentMetadata = {
+        co2: {
+            title: "> SUBSISTEMA: CARB-X (CO2)",
+            desc: "Escaneo satelital activo sobre la red macrozonal. Evaluando partículas por millón de gases de efecto invernadero.",
+            unit: "PPM"
+        },
+        luz: {
+            title: "> SUBSISTEMA: LUX-NET (LUX)",
+            desc: "Monitoreo fotónico del espectro nocturno. Evaluando degradación lumínica y contaminación en preserves astronómicos.",
+            unit: "Lux"
+        },
+        ruido: {
+            title: "> SUBSISTEMA: SONAR-IND (dBA)",
+            desc: "Análisis acústico ambiental de decibelios continuos. Mapeo de polución de frecuencias en sectores mixtos.",
+            unit: "dBA"
+        },
+        bio: {
+            title: "> SUBSISTEMA: THERMO-GEN (°C)",
+            desc: "Evaluación termodinámica infrarroja. Monitoreo de islas de calor urbanas y fluctuaciones superficiales.",
+            unit: "°C"
+        }
+    };
 
     const radarZones = [
         { name: "Zona Norte (Iquique)", coords: [-20.21, -70.14], weight: 0.85 },
@@ -162,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let mapCircles = [];
     radarZones.forEach(zone => {
         let circle = L.circle(zone.coords, { color: dataA.co2, fillColor: dataA.co2, fillOpacity: 0.25, radius: 35000 * zone.weight, className: 'radar-pulse-layer' }).addTo(map);
-        mapCircles.push({ layer: circle, weight: zone.weight });
+        mapCircles.push({ layer: circle, weight: zone.weight, name: zone.name });
     });
 
     const cImp = new Chart(document.getElementById('impact-chart').getContext('2d'), { 
@@ -175,13 +199,54 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     const impactDisplay = document.getElementById('impact-value-display');
+    const zoneTableBody = document.getElementById('radar-zone-table-body');
+    const descBlock = document.querySelector('.map-zone-description');
 
+    // Cambiar agente y recalcular interfaz descriptiva
     document.querySelectorAll('.agent-btn').forEach(b => b.addEventListener('click', e => {
         document.querySelectorAll('.agent-btn').forEach(btn => btn.classList.remove('active')); e.currentTarget.classList.add('active');
-        activeAgent = e.currentTarget.getAttribute('data-agent'); const c = dataA[activeAgent];
+        activeAgent = e.currentTarget.getAttribute('data-agent'); 
+        
+        const c = dataA[activeAgent];
+        const meta = agentMetadata[activeAgent];
+
+        // Cambiar colores y textos descriptivos
         mapCircles.forEach(obj => obj.layer.setStyle({ color: c, fillColor: c }));
-        cImp.data.datasets[0].backgroundColor[0] = c; cImp.update();
+        if (descBlock) descBlock.style.borderColor = c;
+        document.getElementById('radar-desc-title').textContent = meta.title;
+        document.getElementById('radar-desc-text').textContent = meta.desc;
+
+        cImp.data.datasets[0].backgroundColor[0] = c; 
+        cImp.update();
+        renderZoneTable();
     }));
+
+    // Función para renderizar la tabla con cálculos proporcionales simulados según los flujos globales
+    function renderZoneTable() {
+        if (!zoneTableBody) return;
+        zoneTableBody.innerHTML = '';
+
+        let baseValorActual = 0;
+        if (activeAgent === 'co2')   baseValorActual = curCX;
+        if (activeAgent === 'luz')   baseValorActual = curLX;
+        if (activeAgent === 'ruido') baseValorActual = curSI;
+        if (activeAgent === 'bio')   baseValorActual = curTG;
+
+        const meta = agentMetadata[activeAgent];
+        const colorAgente = dataA[activeAgent];
+
+        radarZones.forEach(zone => {
+            // Se calcula el valor proporcional de la zona según su peso geográfico
+            const valorZona = (baseValorActual * zone.weight * (0.95 + Math.random() * 0.1)).toFixed(activeAgent === 'bio' ? 2 : 1);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="color: var(--text-main); font-weight: 600;"><i class="fa-solid fa-location-dot" style="color:${colorAgente}; margin-right:6px; font-size:9px;"></i> ${zone.name}</td>
+                <td style="text-align: right; color: ${colorAgente}; font-weight: bold;">${valorZona} <span style="font-size:8px; color:var(--text-muted); font-weight:normal;">${meta.unit}</span></td>
+            `;
+            zoneTableBody.appendChild(tr);
+        });
+    }
 
     function updateRadarTelemetry(value, minVal, maxVal) {
         let pct = ((value - minVal) / (maxVal - minVal)) * 100; if (pct < 10) pct = 10; if (pct > 100) pct = 100;
@@ -196,6 +261,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         mapCircles.forEach(obj => { let targetRadius = (12000 + (pct * 700)) * obj.weight; obj.layer.setRadius(targetRadius); });
+        
+        // Actualizar los datos de la tabla en cada pulso de telemetría (450ms)
+        renderZoneTable();
     }
 
     // Intervalo Unificado de Actualización
