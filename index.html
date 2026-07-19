@@ -48,36 +48,80 @@
                 <button class="tab-btn" data-tab="tab-thermogen"><i class="fa-solid fa-temperature-high"></i> THERMO-GEN</button>
             </div>
 
+            <!-- TAB CARB-X -->
             <div id="tab-carbx" class="tab-content active">
+                <div class="agent-description-card neon-border-green">
+                    <h4 data-tr="desc-cx-title">Monitoreo de Emisiones de Carbono (CARB-X)</h4>
+                    <p data-tr="desc-cx-body">Este módulo analiza la concentración de partículas de CO₂ en la atmósfera en partes por millón (PPM). Supervisa la dispersión macrozonal y activa alertas críticas cuando los niveles superan los umbrales de seguridad ambiental establecidos.</p>
+                </div>
                 <div class="dashboard-grid">
-                    <div class="chart-card line-chart-container neon-border-green"><div class="card-header"><h3 class="card-title" data-tr="cx-l">CARB-X // Dinámica Temporal</h3></div><div class="chart-wrapper"><canvas id="carbx-line"></canvas></div></div>
+                    <div class="chart-card line-chart-container neon-border-green">
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 class="card-title" data-tr="cx-l">CARB-X // Dinámica Temporal</h3>
+                            <div class="predictive-badge pred-carbx" id="pred-cx">> ANALIZANDO PROYECCIÓN...</div>
+                        </div>
+                        <div class="chart-wrapper"><canvas id="carbx-line"></canvas></div>
+                    </div>
                     <div class="chart-card neon-border-green"><div class="card-header"><h3 class="card-title" data-tr="cx-b">Concentración Macrozona</h3></div><div class="chart-wrapper"><canvas id="carbx-bar"></canvas></div></div>
                     <div class="chart-card neon-border-green"><div class="card-header"><h3 class="card-title" data-tr="cx-r">Dispersión Indexada</h3></div><div class="chart-wrapper"><canvas id="carbx-radar"></canvas></div></div>
                     <div class="chart-card neon-border-green"><div class="card-header"><h3 class="card-title" data-tr="cx-p">Alertas Críticas</h3></div><div class="chart-wrapper"><canvas id="carbx-polar"></canvas></div></div>
                 </div>
             </div>
 
+            <!-- TAB LUX-NET -->
             <div id="tab-luxnet" class="tab-content">
+                <div class="agent-description-card neon-border-yellow">
+                    <h4 data-tr="desc-ln-title">Evaluación de Contaminación Lumínica (LUX-NET)</h4>
+                    <p data-tr="desc-ln-body">Módulo encargado de medir la saturación de flujo fotónico y degradación de la oscuridad natural en la bóveda celeste. Grafica la densidad de emisiones artificiales reflejadas hacia el espacio y su impacto en ecosistemas astronómicos.</p>
+                </div>
                 <div class="dashboard-grid">
-                    <div class="chart-card line-chart-container neon-border-yellow"><div class="card-header"><h3 class="card-title" data-tr="ln-l">LUX-NET // Espectro Fotónico</h3></div><div class="chart-wrapper"><canvas id="luxnet-line"></canvas></div></div>
+                    <div class="chart-card line-chart-container neon-border-yellow">
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 class="card-title" data-tr="ln-l">LUX-NET // Espectro Fotónico</h3>
+                            <div class="predictive-badge pred-luxnet" id="pred-ln">> ANALIZANDO PROYECCIÓN...</div>
+                        </div>
+                        <div class="chart-wrapper"><canvas id="luxnet-line"></canvas></div>
+                    </div>
                     <div class="chart-card neon-border-yellow"><div class="card-header"><h3 class="card-title" data-tr="ln-b">Saturación Lumínica</h3></div><div class="chart-wrapper"><canvas id="luxnet-bar"></canvas></div></div>
                     <div class="chart-card neon-border-yellow"><div class="card-header"><h3 class="card-title" data-tr="ln-d">Clasificación Bóveda</h3></div><div class="chart-wrapper"><canvas id="luxnet-doughnut"></canvas></div></div>
                     <div class="chart-card neon-border-yellow"><div class="card-header"><h3 class="card-title" data-tr="ln-bu">Densidad de Emisiones</h3></div><div class="chart-wrapper"><canvas id="luxnet-bubble"></canvas></div></div>
                 </div>
             </div>
 
+            <!-- TAB SONAR-IND -->
             <div id="tab-sonarind" class="tab-content">
+                <div class="agent-description-card neon-border-purple">
+                    <h4 data-tr="desc-si-title">Diagnóstico de Presión Acústica (SONAR-IND)</h4>
+                    <p data-tr="desc-si-body">Registra los niveles de ruido ambiental e industrial expresados en decibelios ponderados (dBA). Analiza las bandas de frecuencia en áreas mixtas y residenciales para asegurar el cumplimiento de normativas de salud pública.</p>
+                </div>
                 <div class="dashboard-grid">
-                    <div class="chart-card line-chart-container neon-border-purple"><div class="card-header"><h3 class="card-title" data-tr="si-l">SONAR-IND // Presión Sonora</h3></div><div class="chart-wrapper"><canvas id="sonarind-line"></canvas></div></div>
+                    <div class="chart-card line-chart-container neon-border-purple">
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 class="card-title" data-tr="si-l">SONAR-IND // Presión Sonora</h3>
+                            <div class="predictive-badge pred-sonarind" id="pred-si">> ANALIZANDO PROYECCIÓN...</div>
+                        </div>
+                        <div class="chart-wrapper"><canvas id="sonarind-line"></canvas></div>
+                    </div>
                     <div class="chart-card neon-border-purple"><div class="card-header"><h3 class="card-title" data-tr="si-b">Histograma Amplitud dBA</h3></div><div class="chart-wrapper"><canvas id="sonarind-bar"></canvas></div></div>
                     <div class="chart-card neon-border-purple"><div class="card-header"><h3 class="card-title" data-tr="si-r">Frecuencias Industriales</h3></div><div class="chart-wrapper"><canvas id="sonarind-radar"></canvas></div></div>
                     <div class="chart-card neon-border-purple"><div class="card-header"><h3 class="card-title" data-tr="si-d">Cumplimiento Normativo</h3></div><div class="chart-wrapper"><canvas id="sonarind-doughnut"></canvas></div></div>
                 </div>
             </div>
 
+            <!-- TAB THERMO-GEN -->
             <div id="tab-thermogen" class="tab-content">
+                <div class="agent-description-card neon-border-red">
+                    <h4 data-tr="desc-tg-title">Análisis de Dispersión Térmica (THERMO-GEN)</h4>
+                    <p data-tr="desc-tg-body">Supervisa las fluctuaciones termodinámicas y gradientes de calor en grados Celsius (°C). Detecta fenómenos de islas de calor urbanas, anomalías energéticas en subsuelos y vectores de inestabilidad climática local.</p>
+                </div>
                 <div class="dashboard-grid">
-                    <div class="chart-card line-chart-container neon-border-red"><div class="card-header"><h3 class="card-title" data-tr="tg-l">THERMO-GEN // Gradiente Térmico</h3></div><div class="chart-wrapper"><canvas id="thermogen-line"></canvas></div></div>
+                    <div class="chart-card line-chart-container neon-border-red">
+                        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 class="card-title" data-tr="tg-l">THERMO-GEN // Gradiente Térmico</h3>
+                            <div class="predictive-badge pred-thermogen" id="pred-tg">> ANALIZANDO PROYECCIÓN...</div>
+                        </div>
+                        <div class="chart-wrapper"><canvas id="thermogen-line"></canvas></div>
+                    </div>
                     <div class="chart-card neon-border-red"><div class="card-header"><h3 class="card-title" data-tr="tg-b">Fluctuación de Columnas</h3></div><div class="chart-wrapper"><canvas id="thermogen-bar"></canvas></div></div>
                     <div class="chart-card neon-border-red"><div class="card-header"><h3 class="card-title" data-tr="tg-p">Perfil de Calor Estático</h3></div><div class="chart-wrapper"><canvas id="thermogen-polar"></canvas></div></div>
                     <div class="chart-card neon-border-red"><div class="card-header"><h3 class="card-title" data-tr="tg-r">Inestabilidad Térmica</h3></div><div class="chart-wrapper"><canvas id="thermogen-radar"></canvas></div></div>
@@ -99,7 +143,11 @@
                     </div>
                     <div class="impact-box">
                         <h4 style="font-size:10px;margin-bottom:5px;letter-spacing:1px;" data-tr="r-inf">IMPACTO PROMEDIO</h4>
-                        <div style="width:100px;height:100px;margin:0 auto;position:relative;"><canvas id="impact-chart"></canvas></div>
+                        <!-- Modificamos el wrapper para incluir el display numérico centralizado -->
+                        <div class="impact-chart-wrapper">
+                            <canvas id="impact-chart"></canvas>
+                            <div id="impact-value-display">0%</div>
+                        </div>
                     </div>
                 </div>
             </div>
