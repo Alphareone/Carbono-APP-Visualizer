@@ -58,5 +58,5 @@ Este ecosistema analítico avanzado ha sido conceptualizado, diseñado y desarro
 ├── js/
 │   └── main.js          # Controlador lógico, Historical Cache, Leaflet Map con bindings interactivos y pipelines de exportación
 ├── index.html           # Interfaz estructural renovada y contenedores de la suite analítica M.A.E.D.I.S
-├── CHANGELOG.md         # Notas de actualización y registro de saltos arquitectónicos del núcleo
+├── ControlDeCambios(Ghagelog).md         # Notas de actualización y registro de saltos arquitectónicos del núcleo
 └── README.md            # Documentación técnica general del proyecto
