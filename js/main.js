@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
        0. CONSOLA DE ARRANQUE (BOOT Y SHUTDOWN APAGADO OPTIMIZADO)
        ========================================= */
     const bootScreen = document.getElementById('boot-screen'), bootTerminal = document.getElementById('boot-terminal'), shutdownScreen = document.getElementById('shutdown-screen'), logoutBtn = document.getElementById('btn-salir');
-    const bootSequence = ["Iniciando Núcleo MAEDIS v3.0...", "Estableciendo enlace con sensores multidimensionales...", "Sincronizando registros en caché reactiva...", "Calibración gráfica exitosa. Interfaz Desbloqueada."];
+    const bootSequence = ["Iniciando Núcleo M.A.E.D.I.S V4.0...", "Estableciendo enlace con sensores multidimensionales...", "Sincronizando registros en caché reactiva...", "Calibración gráfica exitosa. Interfaz Desbloqueada."];
     
     let currentLang = 'es'; // Estado global del idioma
 
