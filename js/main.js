@@ -293,9 +293,129 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =========================================
        6. PIPELINES DE EXPORTACIÓN
        ========================================= */
-    document.getElementById('btn-excel').addEventListener('click', () => { const wb = XLSX.utils.book_new(); Object.keys(db).forEach(k => { if(db[k].length > 0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(db[k]), k.toUpperCase()); }); XLSX.writeFile(wb, "Reporte_MAEDIS_v3.xlsx"); });
-    document.getElementById('btn-pdf').addEventListener('click', () => { const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.setFont("helvetica", "bold"); doc.text("AUDITORIA TACTICA MAEDIS v3.0", 14, 15); doc.setFontSize(9); doc.text(`Generado: ${new Date().toLocaleString()}`, 14, 22); doc.save("Reporte_MAEDIS_v3.pdf"); });
+    document.getElementById('btn-pdf').addEventListener('click', () => { 
+    const { jsPDF } = window.jspdf, doc = new jsPDF(); 
+    doc.setFont("helvetica", "bold"); 
+    doc.text("INFORME DE REGISTROS OBTENIDOS M.A.E.D.I.S V4.1.0", 14, 15); 
+    doc.setFontSize(9); 
+    doc.text(`Generado: ${new Date().toLocaleString()}`, 14, 22); 
+    
+    doc.text("REGISTROS DE TELEMETRIA GENERALES (ULTIMOS 300 DATOS):", 14, 32);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(8);
+    
+    // Cabecera de la tabla
+    doc.setFillColor(230, 230, 230);
+    doc.rect(14, 36, 182, 6, 'F');
+    doc.setTextColor(50, 50, 50);
+    doc.text(" INDEX | TIMESTAMP        | CANAL DETECTADO      | VALOR METRICO", 16, 40);
+    
+    // 1. Unificar y aplanar todos los datos de 'db' en un solo historial cronológico
+    let historialGlobal = [];
+    Object.keys(db).forEach(k => {
+        db[k].forEach(registro => {
+            historialGlobal.push({
+                canal: k.toUpperCase(),
+                timestamp: registro.timestamp || new Date().toLocaleTimeString(),
+                valor: registro.valor || registro
+            });
+        });
+    });
 
+    // 2. Filtrar y tomar estrictamente los últimos 300 registros
+    const ultimos300Datos = historialGlobal.slice(-300);
+
+    doc.setFont("courier", "normal");
+    let ejeY = 42;
+    
+    // Mapeo cromático pastel según canal
+    const coloresPastel = {
+        "CARB-X": [220, 245, 230],
+        "LUX-NET": [255, 250, 215],
+        "SONAR-IND": [225, 240, 255],
+        "THERMO-GEN": [255, 230, 230]
+    };
+
+    // 3. Renderizar los 300 registros con control automático de páginas
+    ultimos300Datos.forEach((item, index) => {
+        if (ejeY > 275) { 
+            doc.addPage(); 
+            ejeY = 20; 
+        }
+        
+        const color = coloresPastel[item.canal] || [240, 240, 240];
+        
+        // Dibujar fondo de celda pastel
+        doc.setFillColor(color[0], color[1], color[2]);
+        doc.rect(14, ejeY, 182, 6, 'F');
+        
+        // Escribir texto formateado
+        doc.setTextColor(40, 40, 40);
+        const idxStr = String(index + 1).padStart(3, '0');
+        const timeStr = String(item.timestamp).padEnd(16, ' ');
+        const canalStr = String(item.canal).padEnd(20, ' ');
+        const valStr = typeof item.valor === 'object' ? JSON.stringify(item.valor) : String(item.valor);
+
+        doc.text(` #${idxStr}  | ${timeStr} | ${canalStr} | ${valStr}`, 16, ejeY + 4.5);
+        ejeY += 6;
+    });
+    
+    doc.save("Reporte_MAEDIS_v4.pdf"); 
+});
+document.getElementById('btn-excel').addEventListener('click', () => { 
+    const wb = XLSX.utils.book_new(); 
+    
+    // Paleta de colores pastel oficiales por canal (formato HEX)
+    const coloresPastel = {
+        "CARB-X": "D2F5E6",     // Verde pastel claro
+        "LUX-NET": "FFFAF5",    // Amarillo pastel claro
+        "SONAR-IND": "E1F0FF",   // Azul pastel claro
+        "THERMO-GEN": "FFE6E6"  // Rojo pastel claro
+    };
+
+    Object.keys(db).forEach(k => { 
+        const nombreCanal = k.toUpperCase();
+        
+        if (db[k].length > 0) {
+            // 1. Extraer estrictamente los últimos 300 datos registrados en este canal específico
+            const datosCanal = db[k].slice(-300);
+            
+            // 2. Convertir el set de datos a una hoja de cálculo estructurada
+            const ws = XLSX.utils.json_to_sheet(datosCanal);
+            
+            const colorHex = coloresPastel[nombreCanal] || "FFFFFF";
+            
+            // 3. Modificar estilos de las celdas de la hoja actual
+            Object.keys(ws).forEach(cell => {
+                if (cell.match(/^[A-Z]1$/)) {
+                    // Títulos / Cabeceras de la columna (Gris Técnico Destacado)
+                    ws[cell].s = {
+                        fill: { fgColor: { rgb: "E6E6E6" } },
+                        font: { name: "Courier New", bold: true, color: { rgb: "111111" } },
+                        alignment: { horizontal: "center" }
+                    };
+                } else if (cell.match(/^[A-Z]([2-9]|[1-9][0-9]{1,2})$/)) {
+                    // Celdas de contenido: Inyección del color pastel del canal correspondiente
+                    ws[cell].s = {
+                        fill: { fgColor: { rgb: colorHex } },
+                        font: { name: "Courier New", size: 10 },
+                        alignment: { horizontal: "left" }
+                    };
+                }
+            });
+
+            // 4. Configurar las propiedades de la pestaña (Color de la etiqueta inferior)
+            ws['!wb'] = {
+                color: { rgb: colorHex }
+            };
+
+            // 5. Acoplar la hoja de datos al libro general bajo el nombre del canal analítico
+            XLSX.utils.book_append_sheet(wb, ws, nombreCanal); 
+        }
+    }); 
+    
+    XLSX.writeFile(wb, "Reporte_MAEDIS_v4.xlsx"); 
+});
     /* =========================================
        7. PANEL CONFIGURACIÓN INTERFAZ Y TRADUCCIONES EXPANSIBLES
        ========================================= */
