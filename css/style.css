@@ -151,7 +151,77 @@ body { background-color: var(--bg-dark); color: var(--text-main); font-family: '
 .terminal-table { width: 100%; border-collapse: collapse; }
 .terminal-table th { font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--text-muted); padding: 8px; border-bottom: 1px solid var(--border-color); text-align: left; }
 .terminal-table td { padding: 8px; border-bottom: 1px solid var(--border-color); }
+/* ========================================================
+   MODULOS ADICIONALES RADAR (v4.0)
+   ======================================================== */
+.radar-controls {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 12px;
+}
 
+.map-zone-description {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 2px solid var(--neon-green);
+    padding: 8px 10px;
+    border-radius: 0 4px 4px 0;
+    transition: border-color 0.3s ease;
+}
+
+.map-zone-description h4 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.map-zone-description p {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.radar-table-container {
+    flex-grow: 1;
+    min-height: 140px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.radar-zone-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}
+
+.radar-zone-table th {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.radar-zone-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    font-family: monospace;
+}
+
+.radar-zone-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.impact-box {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border-color);
+}
 /* ========================================================
    5. PANEL DE CONFIGURACIÓN UNIFICADO
    ======================================================== */
