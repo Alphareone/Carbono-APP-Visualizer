@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAEDIS v3.0 - Panel de Monitoreo Dimensional</title>
+    <title>M.A.E.D.I.S v4.0 - Panel de Monitoreo Dimensional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
     <div id="boot-screen" class="system-overlay">
         <div class="boot-content">
-            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> MAEDIS // OS v3.0</h1>
+            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> M.A.E.D.I.S - V4.0</h1>
             <div id="boot-terminal" class="boot-text"></div>
             <div class="blinking-cursor"></div>
         </div>
@@ -28,7 +28,7 @@
     </div>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><h2 class="sidebar-logo"><i class="fa-solid fa-satellite-dish"></i> MAEDIS</h2></div>
+        <div class="sidebar-header"><h2 class="sidebar-logo"><i class="fa-solid fa-satellite-dish"></i> M.A.E.D.I.S</h2></div>
         <nav class="nav-menu">
             <div class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i><span class="nav-text" data-tr="m-dash">Dashboard</span></div>
             <div class="nav-item" data-target="radar-territorial"><i class="fa-solid fa-earth-americas"></i><span class="nav-text" data-tr="m-radar">Radar Map</span></div>
@@ -129,21 +129,42 @@
             </div>
         </section>
 
-        <section id="radar-territorial" class="view">
+<section id="radar-territorial" class="view">
             <div class="radar-layout">
                 <div id="map-wrapper" class="map-container neon-border-green"><div id="chile-map"></div></div>
                 <div class="radar-controls chart-card neon-border-green">
                     <div class="card-header"><h3 class="card-title" data-tr="r-ctrl">Consola Georreferenciada</h3></div>
-                    <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;" data-tr="r-desc">Seleccione el agente para proyectar ondas sobre el territorio chileno.</p>
+                    
+                    <!-- NUEVA SECCIÓN: DESCRIPCIÓN DE ZONA EMISORA TÁCTICA -->
+                    <div class="map-zone-description">
+                        <h4 id="radar-desc-title">> SUBSISTEMA: CARB-X (CO2)</h4>
+                        <p id="radar-desc-text">Escaneo satelital activo sobre la red de monitoreo macrozonal chilena. Evaluando partículas por millón de gases de efecto invernadero y vectores contaminantes.</p>
+                    </div>
+
                     <div class="btn-agent-grid">
                         <button class="agent-btn active" data-agent="co2" data-tr="rb-co2"><i class="fa-solid fa-leaf"></i> CO2</button>
                         <button class="agent-btn" data-agent="luz" data-tr="rb-luz"><i class="fa-solid fa-sun"></i> LUX</button>
                         <button class="agent-btn" data-agent="ruido" data-tr="rb-ruido"><i class="fa-solid fa-volume-high"></i> RUIDO</button>
                         <button class="agent-btn" data-agent="bio" data-tr="rb-bio"><i class="fa-solid fa-temperature-high"></i> TÉRMICO</button>
                     </div>
+
+                    <!-- NUEVA SECCIÓN: TABLA DE DATOS FILTRADOS POR ZONAS -->
+                    <div class="radar-table-container">
+                        <table class="radar-zone-table">
+                            <thead>
+                                <tr>
+                                    <th>ZONA METROPOLITANA</th>
+                                    <th style="text-align: right;">VALOR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="radar-zone-table-body">
+                                <!-- Inyectado dinámicamente por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
                     <div class="impact-box">
                         <h4 style="font-size:10px;margin-bottom:5px;letter-spacing:1px;" data-tr="r-inf">IMPACTO PROMEDIO</h4>
-                        <!-- Modificamos el wrapper para incluir el display numérico centralizado -->
                         <div class="impact-chart-wrapper">
                             <canvas id="impact-chart"></canvas>
                             <div id="impact-value-display">0%</div>
