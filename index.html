@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-agent="carb-x" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>M.A.E.D.I.S v4.0 - Panel de Monitoreo Dimensional</title>
+    <title>M.A.E.D.I.S v4.5 - Panel de Monitoreo Dimensional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
     <div id="boot-screen" class="system-overlay">
         <div class="boot-content">
-            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> M.A.E.D.I.S - V4.0</h1>
+            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> M.A.E.D.I.S - V4.5</h1>
             <div id="boot-terminal" class="boot-text"></div>
             <div class="blinking-cursor"></div>
         </div>
@@ -39,13 +39,12 @@
     </aside>
 
     <main class="main-content">
-        
         <section id="dashboard" class="view active">
             <div class="tabs">
-                <button class="tab-btn active" data-tab="tab-carbx"><i class="fa-solid fa-leaf"></i> CARB-X</button>
-                <button class="tab-btn" data-tab="tab-luxnet"><i class="fa-solid fa-sun"></i> LUX-NET</button>
-                <button class="tab-btn" data-tab="tab-sonarind"><i class="fa-solid fa-volume-high"></i> SONAR-IND</button>
-                <button class="tab-btn" data-tab="tab-thermogen"><i class="fa-solid fa-temperature-high"></i> THERMO-GEN</button>
+                <button class="tab-btn active" data-tab="tab-carbx" data-agent-switch="carb-x"><i class="fa-solid fa-leaf"></i> CARB-X</button>
+                <button class="tab-btn" data-tab="tab-luxnet" data-agent-switch="lux"><i class="fa-solid fa-sun"></i> LUX-NET</button>
+                <button class="tab-btn" data-tab="tab-sonarind" data-agent-switch="sonar"><i class="fa-solid fa-volume-high"></i> SONAR-IND</button>
+                <button class="tab-btn" data-tab="tab-thermogen" data-agent-switch="thermo"><i class="fa-solid fa-temperature-high"></i> THERMO-GEN</button>
             </div>
 
             <!-- TAB CARB-X -->
@@ -54,6 +53,41 @@
                     <h4 data-tr="desc-cx-title">Monitoreo de Emisiones de Carbono (CARB-X)</h4>
                     <p data-tr="desc-cx-body">Este módulo analiza la concentración de partículas de CO₂ en la atmósfera en partes por millón (PPM). Supervisa la dispersión macrozonal y activa alertas críticas cuando los niveles superan los umbrales de seguridad ambiental establecidos.</p>
                 </div>
+
+                <div class="kpi-container tab-carb-x">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Mapeo Atmosférico</span>
+                            <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main" id="cx-kpi-main">-- PPM</div>
+                            <div class="kpi-subtext">Variación: <span class="highlight" id="cx-kpi-delta">0.0</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right cx-kpi-ts">--:--:--</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Volumen Temporal</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main">42.8%</div>
+                            <div class="kpi-subtext">Estado: <span class="highlight text-alert">ALERTA</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">4 / 9</span></div>
+                    </div>
+                    <div class="kpi-card kpi-card-graph">
+                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-body-graph">
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="cx-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="mini-sparkline">
+                                <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline id="cx-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">94%</span></div>
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="chart-card line-chart-container neon-border-green">
                         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -74,6 +108,41 @@
                     <h4 data-tr="desc-ln-title">Evaluación de Contaminación Lumínica (LUX-NET)</h4>
                     <p data-tr="desc-ln-body">Módulo encargado de medir la saturación de flujo fotónico y degradación de la oscuridad natural en la bóveda celeste. Grafica la densidad de emisiones artificiales reflejadas hacia el espacio y su impacto en ecosistemas astronómicos.</p>
                 </div>
+
+                <div class="kpi-container tab-lux-net">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Flujo Fotónico</span>
+                            <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main" id="ln-kpi-main">-- Lux</div>
+                            <div class="kpi-subtext">Variación: <span class="highlight" id="ln-kpi-delta">0.0</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right ln-kpi-ts">--:--:--</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Saturación Bóveda</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main">18.4%</div>
+                            <div class="kpi-subtext">Estado: <span class="highlight">ESTABLE</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Estable</span></div>
+                    </div>
+                    <div class="kpi-card kpi-card-graph">
+                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-body-graph">
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="ln-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="mini-sparkline">
+                                <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline id="ln-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">91%</span></div>
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="chart-card line-chart-container neon-border-yellow">
                         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -94,6 +163,41 @@
                     <h4 data-tr="desc-si-title">Diagnóstico de Presión Acústica (SONAR-IND)</h4>
                     <p data-tr="desc-si-body">Registra los niveles de ruido ambiental e industrial expresados en decibelios ponderados (dBA). Analiza las bandas de frecuencia en áreas mixtas y residenciales para asegurar el cumplimiento de normativas de salud pública.</p>
                 </div>
+
+                <div class="kpi-container tab-sonar-ind">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Presión Acústica</span>
+                            <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main" id="si-kpi-main">-- dBA</div>
+                            <div class="kpi-subtext">Variación: <span class="highlight" id="si-kpi-delta">0.0</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right si-kpi-ts">--:--:--</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Umbral Seguro</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main">Normativa</div>
+                            <div class="kpi-subtext">Estado: <span class="highlight text-alert">CRÍTICO</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Frecuencias</span></div>
+                    </div>
+                    <div class="kpi-card kpi-card-graph">
+                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-body-graph">
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="si-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="mini-sparkline">
+                                <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline id="si-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">95%</span></div>
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="chart-card line-chart-container neon-border-purple">
                         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -114,6 +218,41 @@
                     <h4 data-tr="desc-tg-title">Análisis de Dispersión Térmica (THERMO-GEN)</h4>
                     <p data-tr="desc-tg-body">Supervisa las fluctuaciones termodinámicas y gradientes de calor en grados Celsius (°C). Detecta fenómenos de islas de calor urbanas, anomalías energéticas en subsuelos y vectores de inestabilidad climática local.</p>
                 </div>
+
+                <div class="kpi-container tab-thermo-gen">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Gradiente Térmico</span>
+                            <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
+                        </div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main" id="tg-kpi-main">-- °C</div>
+                            <div class="kpi-subtext">Variación: <span class="highlight" id="tg-kpi-delta">0.0</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right tg-kpi-ts">--:--:--</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Isla de Calor</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-body">
+                            <div class="kpi-value-main">Fluctuación</div>
+                            <div class="kpi-subtext">Estado: <span class="highlight">ESTABLE</span></div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Sensores</span></div>
+                    </div>
+                    <div class="kpi-card kpi-card-graph">
+                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-body-graph">
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="tg-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="mini-sparkline">
+                                <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline id="tg-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">89%</span></div>
+                    </div>
+                </div>
+
                 <div class="dashboard-grid">
                     <div class="chart-card line-chart-container neon-border-red">
                         <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -129,26 +268,24 @@
             </div>
         </section>
 
-<section id="radar-territorial" class="view">
+        <section id="radar-territorial" class="view">
             <div class="radar-layout">
                 <div id="map-wrapper" class="map-container neon-border-green"><div id="chile-map"></div></div>
                 <div class="radar-controls chart-card neon-border-green">
                     <div class="card-header"><h3 class="card-title" data-tr="r-ctrl">Consola Georreferenciada</h3></div>
                     
-                    <!-- NUEVA SECCIÓN: DESCRIPCIÓN DE ZONA EMISORA TÁCTICA -->
                     <div class="map-zone-description">
                         <h4 id="radar-desc-title">> SUBSISTEMA: CARB-X (CO2)</h4>
                         <p id="radar-desc-text">Escaneo satelital activo sobre la red de monitoreo macrozonal chilena. Evaluando partículas por millón de gases de efecto invernadero y vectores contaminantes.</p>
                     </div>
 
                     <div class="btn-agent-grid">
-                        <button class="agent-btn active" data-agent="co2" data-tr="rb-co2"><i class="fa-solid fa-leaf"></i> CO2</button>
-                        <button class="agent-btn" data-agent="luz" data-tr="rb-luz"><i class="fa-solid fa-sun"></i> LUX</button>
-                        <button class="agent-btn" data-agent="ruido" data-tr="rb-ruido"><i class="fa-solid fa-volume-high"></i> RUIDO</button>
-                        <button class="agent-btn" data-agent="bio" data-tr="rb-bio"><i class="fa-solid fa-temperature-high"></i> TÉRMICO</button>
+                        <button class="agent-btn active" data-agent="co2" data-agent-switch="carb-x" data-tr="rb-co2"><i class="fa-solid fa-leaf"></i> CO2</button>
+                        <button class="agent-btn" data-agent="luz" data-agent-switch="lux" data-tr="rb-luz"><i class="fa-solid fa-sun"></i> LUX</button>
+                        <button class="agent-btn" data-agent="ruido" data-agent-switch="sonar" data-tr="rb-ruido"><i class="fa-solid fa-volume-high"></i> RUIDO</button>
+                        <button class="agent-btn" data-agent="bio" data-agent-switch="thermo" data-tr="rb-bio"><i class="fa-solid fa-temperature-high"></i> TÉRMICO</button>
                     </div>
 
-                    <!-- NUEVA SECCIÓN: TABLA DE DATOS FILTRADOS POR ZONAS -->
                     <div class="radar-table-container">
                         <table class="radar-zone-table">
                             <thead>
@@ -157,9 +294,7 @@
                                     <th style="text-align: right;">VALOR</th>
                                 </tr>
                             </thead>
-                            <tbody id="radar-zone-table-body">
-                                <!-- Inyectado dinámicamente por JS -->
-                            </tbody>
+                            <tbody id="radar-zone-table-body"></tbody>
                         </table>
                     </div>
 
