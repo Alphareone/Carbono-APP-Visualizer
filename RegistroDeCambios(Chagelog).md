@@ -4,6 +4,13 @@ Todo el desarrollo del núcleo del sistema, optimizaciones de memoria, evolució
 
 ---
 
+## [v5.2.0] - 2026-07-30
+### Modificado
+* **Consolidación del Núcleo:** Estabilización general de los ciclos de sincronización de 450 ms y optimización en la renderización de la matriz multi-gráfico 2x2.
+* **Documentación y Repositorio:** Actualización general de la arquitectura técnica, sincronización de la nomenclatura del archivo de registro de cambios y alineación del stack tecnológico en el `README.md`.
+
+---
+
 ## [v4.1.0] - 2026-07-19
 ### Añadido
 * **Mapa Territorial:** Integración de Tooltips contextuales dinámicos (`.bindTooltip`) en las macrozonas de emisión de Chile (Valparaíso, Santiago, Concepción, entre otras).
