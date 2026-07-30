@@ -332,3 +332,31 @@ body {
     .system-terminal { height: calc(100vh - 200px); }
     .single-config-card { padding: 12px; }
 }
+/* ========================================================
+   ESTILOS CYBERPUNK PARA TOOLTIPS DE LEAFLET (v4.1.0)
+   ======================================================== */
+.leaflet-tooltip.cyber-tooltip {
+    background: var(--bg-panel) !important;
+    border: 1px solid var(--agent-color) !important;
+    color: var(--text-main) !important;
+    font-family: 'Orbitron', monospace, sans-serif !important;
+    font-size: 10px !important;
+    box-shadow: 0 0 10px var(--agent-glow) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+/* Adaptación de flechas indicadoras */
+.leaflet-tooltip-top.cyber-tooltip::before,
+.leaflet-tooltip-bottom.cyber-tooltip::before,
+.leaflet-tooltip-left.cyber-tooltip::before,
+.leaflet-tooltip-right.cyber-tooltip::before {
+    border-top-color: var(--agent-color) !important;
+}
+
+/* Control de capa para evitar superposiciones con la interfaz en móviles */
+.leaflet-pane {
+    z-index: 10 !important;
+}
