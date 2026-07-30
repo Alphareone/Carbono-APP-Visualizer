@@ -482,13 +482,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return `<span style="background:${bg}; color:${color}; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: bold; margin-left: 6px;">${statusText}</span>`;
     }
 
-    let mapCircles = [];
+let mapCircles = [];
     radarZones.forEach(zone => {
         const initialStyle = getAgentStyle('co2', dataA.co2);
         initialStyle.radius = 35000 * zone.weight;
         
         let circle = L.circle(zone.coords, initialStyle).addTo(map);
-        circle.bindTooltip(`<b>${zone.name}</b><br>${currentLang === 'en' ? 'State: Operational' : 'Estado: Operacional'}`, { sticky: true });
+        circle.bindTooltip(`<b>${zone.name}</b><br>${currentLang === 'en' ? 'State: Operational' : 'Estado: Operacional'}`, { 
+            sticky: true,
+            className: 'cyber-tooltip' // <-- Parámetro agregado
+        });
         mapCircles.push({ id: zone.id, layer: circle, weight: zone.weight, name: zone.name });
     });
 
