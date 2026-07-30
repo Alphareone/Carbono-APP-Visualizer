@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>M.A.E.D.I.S v4.5 - Panel de Monitoreo Dimensional</title>
+    <title>M.A.E.D.I.S V5.2 - Panel de Monitoreo Dimensional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
     <div id="boot-screen" class="system-overlay">
         <div class="boot-content">
-            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> M.A.E.D.I.S - V4.5</h1>
+            <h1 class="boot-logo"><i class="fa-solid fa-microchip"></i> M.A.E.D.I.S - V5.2</h1>
             <div id="boot-terminal" class="boot-text"></div>
             <div class="blinking-cursor"></div>
         </div>
@@ -57,34 +57,34 @@
                 <div class="kpi-container tab-carb-x">
                     <div class="kpi-card">
                         <div class="kpi-header">
-                            <span class="kpi-title">Mapeo Atmosférico</span>
+                            <span class="kpi-title" data-tr="kpi-cx-1">Mapeo Atmosférico</span>
                             <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
                         </div>
                         <div class="kpi-body">
                             <div class="kpi-value-main" id="cx-kpi-main">-- PPM</div>
-                            <div class="kpi-subtext">Variación: <span class="highlight" id="cx-kpi-delta">0.0</span></div>
+                            <div class="kpi-subtext"><span data-tr="kpi-var">Variación:</span> <span class="highlight" id="cx-kpi-delta">0.0</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right cx-kpi-ts">--:--:--</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-sync">Sincronizado</span><span class="footer-right cx-kpi-ts">--:--:--</span></div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-header"><span class="kpi-title">Volumen Temporal</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-cx-2">Volumen Temporal</span><span class="kpi-icon">⚠️</span></div>
                         <div class="kpi-body">
-                            <div class="kpi-value-main">42.8%</div>
-                            <div class="kpi-subtext">Estado: <span class="highlight text-alert">ALERTA</span></div>
+                            <div class="kpi-value-main" id="vol-temp-val">--%</div>
+                            <div class="kpi-subtext"><span data-tr="kpi-state">Estado:</span> <span class="highlight text-alert" id="vol-temp-status">ALERTA</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">4 / 9</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-macro">Macrozonas</span><span class="footer-right">4 / 9</span></div>
                     </div>
                     <div class="kpi-card kpi-card-graph">
-                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-tend">Tendencia</span><span class="kpi-badge">V5.2-AI</span></div>
                         <div class="kpi-body-graph">
-                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="cx-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="cx-kpi-mini">--</div><div class="kpi-subtext-mini" data-tr="kpi-inst">Instante</div></div>
                             <div class="mini-sparkline">
                                 <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
                                     <polyline id="cx-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
                                 </svg>
                             </div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">94%</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-conf">Confianza</span><span class="footer-right">94%</span></div>
                     </div>
                 </div>
 
@@ -112,34 +112,34 @@
                 <div class="kpi-container tab-lux-net">
                     <div class="kpi-card">
                         <div class="kpi-header">
-                            <span class="kpi-title">Flujo Fotónico</span>
+                            <span class="kpi-title" data-tr="kpi-ln-1">Flujo Fotónico</span>
                             <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
                         </div>
                         <div class="kpi-body">
                             <div class="kpi-value-main" id="ln-kpi-main">-- Lux</div>
-                            <div class="kpi-subtext">Variación: <span class="highlight" id="ln-kpi-delta">0.0</span></div>
+                            <div class="kpi-subtext"><span data-tr="kpi-var">Variación:</span> <span class="highlight" id="ln-kpi-delta">0.0</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right ln-kpi-ts">--:--:--</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-sync">Sincronizado</span><span class="footer-right ln-kpi-ts">--:--:--</span></div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-header"><span class="kpi-title">Saturación Bóveda</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-ln-2">Saturación Bóveda</span><span class="kpi-icon">⚠️</span></div>
                         <div class="kpi-body">
-                            <div class="kpi-value-main">18.4%</div>
-                            <div class="kpi-subtext">Estado: <span class="highlight">ESTABLE</span></div>
+                            <div class="kpi-value-main" id="sat-bov-val">--%</div>
+                            <div class="kpi-subtext"><span data-tr="kpi-state">Estado:</span> <span class="highlight" id="sat-bov-status">ESTABLE</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Estable</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-macro">Macrozonas</span><span class="footer-right">Estable</span></div>
                     </div>
                     <div class="kpi-card kpi-card-graph">
-                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-tend">Tendencia</span><span class="kpi-badge">V5.2-AI</span></div>
                         <div class="kpi-body-graph">
-                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="ln-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="ln-kpi-mini">--</div><div class="kpi-subtext-mini" data-tr="kpi-inst">Instante</div></div>
                             <div class="mini-sparkline">
                                 <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
                                     <polyline id="ln-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
                                 </svg>
                             </div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">91%</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-conf">Confianza</span><span class="footer-right">91%</span></div>
                     </div>
                 </div>
 
@@ -167,34 +167,34 @@
                 <div class="kpi-container tab-sonar-ind">
                     <div class="kpi-card">
                         <div class="kpi-header">
-                            <span class="kpi-title">Presión Acústica</span>
+                            <span class="kpi-title" data-tr="kpi-si-1">Presión Acústica</span>
                             <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
                         </div>
                         <div class="kpi-body">
                             <div class="kpi-value-main" id="si-kpi-main">-- dBA</div>
-                            <div class="kpi-subtext">Variación: <span class="highlight" id="si-kpi-delta">0.0</span></div>
+                            <div class="kpi-subtext"><span data-tr="kpi-var">Variación:</span> <span class="highlight" id="si-kpi-delta">0.0</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right si-kpi-ts">--:--:--</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-sync">Sincronizado</span><span class="footer-right si-kpi-ts">--:--:--</span></div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-header"><span class="kpi-title">Umbral Seguro</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-si-2">Umbral Seguro</span><span class="kpi-icon">⚠️</span></div>
                         <div class="kpi-body">
-                            <div class="kpi-value-main">Normativa</div>
-                            <div class="kpi-subtext">Estado: <span class="highlight text-alert">CRÍTICO</span></div>
+                            <div class="kpi-value-main" id="umbral-val">-- dBA</div>
+                            <div class="kpi-subtext"><span data-tr="kpi-state">Estado:</span> <span class="highlight text-alert" id="umbral-status">CRÍTICO</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Frecuencias</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-macro">Macrozonas</span><span class="footer-right">Frecuencias</span></div>
                     </div>
                     <div class="kpi-card kpi-card-graph">
-                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-tend">Tendencia</span><span class="kpi-badge">V5.2-AI</span></div>
                         <div class="kpi-body-graph">
-                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="si-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="si-kpi-mini">--</div><div class="kpi-subtext-mini" data-tr="kpi-inst">Instante</div></div>
                             <div class="mini-sparkline">
                                 <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
                                     <polyline id="si-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
                                 </svg>
                             </div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">95%</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-conf">Confianza</span><span class="footer-right">95%</span></div>
                     </div>
                 </div>
 
@@ -222,34 +222,34 @@
                 <div class="kpi-container tab-thermo-gen">
                     <div class="kpi-card">
                         <div class="kpi-header">
-                            <span class="kpi-title">Gradiente Térmico</span>
+                            <span class="kpi-title" data-tr="kpi-tg-1">Gradiente Térmico</span>
                             <span class="kpi-status-container"><span class="kpi-status-text">ONLINE</span><span class="kpi-status-dot pulse"></span></span>
                         </div>
                         <div class="kpi-body">
                             <div class="kpi-value-main" id="tg-kpi-main">-- °C</div>
-                            <div class="kpi-subtext">Variación: <span class="highlight" id="tg-kpi-delta">0.0</span></div>
+                            <div class="kpi-subtext"><span data-tr="kpi-var">Variación:</span> <span class="highlight" id="tg-kpi-delta">0.0</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Sincronizado</span><span class="footer-right tg-kpi-ts">--:--:--</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-sync">Sincronizado</span><span class="footer-right tg-kpi-ts">--:--:--</span></div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-header"><span class="kpi-title">Isla de Calor</span><span class="kpi-icon">⚠️</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-tg-2">Isla de Calor</span><span class="kpi-icon">⚠️</span></div>
                         <div class="kpi-body">
-                            <div class="kpi-value-main">Fluctuación</div>
-                            <div class="kpi-subtext">Estado: <span class="highlight">ESTABLE</span></div>
+                            <div class="kpi-value-main" id="isla-calor-val">-- °C</div>
+                            <div class="kpi-subtext"><span data-tr="kpi-state">Estado:</span> <span class="highlight" id="isla-calor-status">ESTABLE</span></div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Macrozonas</span><span class="footer-right">Sensores</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-macro">Macrozonas</span><span class="footer-right">Sensores</span></div>
                     </div>
                     <div class="kpi-card kpi-card-graph">
-                        <div class="kpi-header"><span class="kpi-title">Tendencia</span><span class="kpi-badge">V4-AI</span></div>
+                        <div class="kpi-header"><span class="kpi-title" data-tr="kpi-tend">Tendencia</span><span class="kpi-badge">V5.2-AI</span></div>
                         <div class="kpi-body-graph">
-                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="tg-kpi-mini">--</div><div class="kpi-subtext-mini">Instante</div></div>
+                            <div class="kpi-graph-info"><div class="kpi-value-mini" id="tg-kpi-mini">--</div><div class="kpi-subtext-mini" data-tr="kpi-inst">Instante</div></div>
                             <div class="mini-sparkline">
                                 <svg viewBox="0 0 110 42" class="sparkline-svg" xmlns="http://www.w3.org/2000/svg">
                                     <polyline id="tg-sparkline-path" fill="none" stroke="var(--agent-color)" stroke-width="1.5" points=""></polyline>
                                 </svg>
                             </div>
                         </div>
-                        <div class="kpi-footer"><span class="footer-left">Confianza</span><span class="footer-right">89%</span></div>
+                        <div class="kpi-footer"><span class="footer-left" data-tr="kpi-conf">Confianza</span><span class="footer-right">89%</span></div>
                     </div>
                 </div>
 
@@ -290,8 +290,8 @@
                         <table class="radar-zone-table">
                             <thead>
                                 <tr>
-                                    <th>ZONA METROPOLITANA</th>
-                                    <th style="text-align: right;">VALOR</th>
+                                    <th data-tr="r-th-zone">ZONA METROPOLITANA</th>
+                                    <th style="text-align: right;" data-tr="r-th-val">VALOR</th>
                                 </tr>
                             </thead>
                             <tbody id="radar-zone-table-body"></tbody>
@@ -344,10 +344,11 @@
         </section>
     </main>
 
+    <!-- LIBRERÍAS DE JS Y EXPORTACIÓN -->
     <canvas id="particle-canvas"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="./js/main.js"></script>
